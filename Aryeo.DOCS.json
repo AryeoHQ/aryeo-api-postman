@@ -848,6 +848,15 @@
           },
           {
             "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "in": "query",
+            "name": "filter[include_inactive]",
+            "description": "Include inactive products (in addition to active products) when returning products."
+          },
+          {
+            "schema": {
               "type": "array",
               "items": {
                 "description": "ID of a category. UUID Version 4.",
@@ -2162,6 +2171,14 @@
         "title": "Group",
         "description": "A collection of users that can interact with the Aryeo platform. Permissions and properties are determined based on the group's type which can be creator, agent, or brokerage.",
         "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object’s type. Objects of the same type share the same schema.",
+            "example": "GROUP",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 100
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -2490,6 +2507,14 @@
         "type": "object",
         "description": "A real estate listing.",
         "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object’s type. Objects of the same type share the same schema.",
+            "example": "LISTING",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 100
+          },
           "id": {
             "type": "string",
             "description": "ID of the listing. UUID Version 4.",
@@ -2656,6 +2681,7 @@
           }
         },
         "required": [
+          "object",
           "id",
           "address",
           "downloads_enabled"
@@ -3050,6 +3076,14 @@
             "example": "fulfilled",
             "nullable": true
           },
+          "internal_notes": {
+            "type": "string",
+            "description": "Internal notes that will be attached to the order. Viewable only by the team.",
+            "minLength": 0,
+            "maxLength": 2550,
+            "example": "Private note about the order!",
+            "nullable": true
+          },
           "payment_status": {
             "type": "string",
             "enum": [
@@ -3062,12 +3096,27 @@
             "description": "The payment status of the order. Defaults to \"UNPAID\". ",
             "nullable": true
           },
-          "place_id": {
+          "address_id": {
             "type": "string",
-            "example": "abcdef_1234",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "Google Places ID of the address to attach to the order."
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the address to associate with the order. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the customer to associate with the order. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "notify": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the customer and creator notifications should be sent when creating the order. Requires an address and customer to be set in order for the notifications to be sent.",
+            "nullable": true
           }
         }
       },
@@ -3225,6 +3274,12 @@
             "nullable": false,
             "minLength": 0,
             "maxLength": 65536
+          },
+          "active": {
+            "type": "boolean",
+            "description": "The active status of a product.",
+            "example": true,
+            "nullable": false
           },
           "type": {
             "type": "string",
