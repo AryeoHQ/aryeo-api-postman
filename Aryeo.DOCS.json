@@ -277,7 +277,7 @@
             }
           }
         },
-        "description": "Cancel an appointment. The appointments order's customer can be optionally notified of this change. ",
+        "description": "Cancel an appointment. The appointments order's customer can be optionally notified of this change.",
         "security": [
           {
             "Token": []
@@ -379,7 +379,7 @@
             }
           }
         },
-        "description": "Reschedule an appointment. The appointments order's customer can be optionally notified of this change. ",
+        "description": "Reschedule an appointment. The appointments order's customer can be optionally notified of this change.",
         "security": [
           {
             "Token": []
@@ -538,7 +538,7 @@
             },
             "in": "query",
             "name": "filter[active]",
-            "description": "Set as true to return listings that have an active status (e.g. active statuses include `COMING_SOON`, `FOR_SALE`, `FOR_LEASE`, `PENDING_SALE`, `PENDING_LEASE`, `SOLD`, `LEASED`). "
+            "description": "Set as true to return listings that have an active status (e.g. active statuses include `COMING_SOON`, `FOR_SALE`, `FOR_LEASE`, `PENDING_SALE`, `PENDING_LEASE`, `SOLD`, `LEASED`)."
           },
           {
             "schema": {
@@ -1173,6 +1173,400 @@
         ]
       }
     },
+    "/scheduling/available-dates": {
+      "get": {
+        "summary": "Fetch available days for a user or group",
+        "tags": [
+          "appointments"
+        ],
+        "responses": {
+          "200": {
+            "description": "CalendarDayCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarDayCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-available-dates",
+        "description": "Fetch available calendar days for scheduling or rescheduling an appointment. Availability can be retrieved using a specific start & end date range, or using a timeframe. When using a timeframe, the page parameter can be used to flip through weeks, months, etc.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a user. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[user_ids]",
+            "description": "The IDs of users whose availability will be retrieved. UUID Version 4."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "example": "00000000-0000-4000-8000-000000000000"
+            },
+            "in": "query",
+            "name": "filter[appointment_id]",
+            "description": "Appointment ID used to fetch availability for an existing order"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[start_at]",
+            "description": "Returns availability after start_at"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "format": "date-time",
+              "example": "2021-01-02T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[end_at]",
+            "description": "Returns availability before end_at"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "items": {
+                "description": "Timeframe type",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5,
+                "example": "MONTH"
+              },
+              "enum": [
+                "DAY",
+                "WEEK",
+                "MONTH",
+                "YEAR"
+              ],
+              "minLength": 1,
+              "maxLength": 5,
+              "example": "MONTH"
+            },
+            "in": "query",
+            "name": "filter[timeframe]",
+            "description": "Returns availability for a specific timeframe. Used instead of start_at & end_at"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minLength": 1,
+              "maxLength": 100,
+              "example": 60,
+              "minimum": 1,
+              "maximum": 360
+            },
+            "in": "query",
+            "name": "duration",
+            "description": "Duration of the event to schedule. Required if appointment_id isn't specified"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 15,
+              "minLength": 1,
+              "maxLength": 5,
+              "minimum": 1,
+              "maximum": 360
+            },
+            "in": "query",
+            "name": "interval",
+            "description": "Interval of bookable timeslots starting at x minutes on the hour . Required if appointment_id isn't specified"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5,
+              "example": "2"
+            },
+            "in": "query",
+            "name": "timezone",
+            "description": "Timezone of the client. Localizes the available days"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 1
+            },
+            "in": "query",
+            "name": "page",
+            "description": "The requested page of results"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 5
+            },
+            "in": "query",
+            "name": "per_page",
+            "description": "The number of results per page. Only applies when using a date range"
+          }
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "x-internal": false
+      },
+      "parameters": []
+    },
+    "/scheduling/available-timeslots": {
+      "get": {
+        "summary": "Fetch available timeslots for a user or group",
+        "tags": [
+          "appointments"
+        ],
+        "responses": {
+          "200": {
+            "description": "TimeslotCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeslotCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-available-timeslots",
+        "description": "Fetch available timeslots for scheduling or rescheduling an appointment. Timeslots can be retrieved using a specific start & end date range, or using a timeframe. When using a timeframe, the page parameter can be used to flip through days or weeks.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a user. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[user_ids]",
+            "description": "The IDs of users whose appointments will be retrieved. UUID Version 4."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "example": "00000000-0000-4000-8000-000000000000"
+            },
+            "in": "query",
+            "name": "filter[appointment_id]",
+            "description": "Appointment ID used to fetch availability for an existing order"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[start_at]",
+            "description": "Returns availability after start_at"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "format": "date-time",
+              "example": "2021-01-02T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[end_at]",
+            "description": "Returns availability before end_at"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "items": {
+                "description": "Timeframe type",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5,
+                "example": "MONTH"
+              },
+              "enum": [
+                "DAY",
+                "WEEK",
+                "MONTH",
+                "YEAR"
+              ],
+              "example": "MONTH",
+              "minLength": 1,
+              "maxLength": 5
+            },
+            "in": "query",
+            "name": "filter[timeframe]",
+            "description": "Returns availability for a specific timeframe. Used instead of start_at & end_at"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 60,
+              "minLength": 1,
+              "maxLength": 100,
+              "minimum": 1,
+              "maximum": 360
+            },
+            "in": "query",
+            "name": "duration",
+            "description": "Duration of the event to schedule. Required if appointment_id isn't specified"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 25,
+              "minLength": 1,
+              "maxLength": 5,
+              "minimum": 1,
+              "maximum": 360
+            },
+            "in": "query",
+            "name": "interval",
+            "description": "Interval of bookable timeslots starting at x minutes on the hour . Required if appointment_id isn't specified"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 1
+            },
+            "in": "query",
+            "name": "page",
+            "description": "The requested page of results"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 5,
+              "minimum": 1
+            },
+            "in": "query",
+            "name": "per_page",
+            "description": "The number of results per page. Only applies when using a date range"
+          }
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "x-internal": false
+      },
+      "parameters": []
+    },
     "/unconfirmed-appointments": {
       "get": {
         "summary": "List all unconfirmed appointments.",
@@ -1232,7 +1626,7 @@
           }
         },
         "operationId": "get-unconfirmed-appointments",
-        "description": "List all unconfirmed appointments. These are appointments that have not been scheduled. ",
+        "description": "List all unconfirmed appointments. These are appointments that have not been scheduled.",
         "parameters": [
           {
             "schema": {
@@ -2095,6 +2489,62 @@
           },
           "data": {
             "$ref": "#/components/schemas/Appointment"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CalendarDay": {
+        "description": "A bookable time range with available users.",
+        "type": "object",
+        "title": "Timeslot",
+        "x-internal": true,
+        "properties": {
+          "date": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10,
+            "example": "2021-01-01",
+            "description": "Calendar day that has available timeslots."
+          },
+          "is_available": {
+            "type": "boolean",
+            "example": "true",
+            "description": "Does the day have availability?"
+          }
+        },
+        "required": [
+          "date",
+          "is_available"
+        ]
+      },
+      "CalendarDayCollection": {
+        "title": "CalendarDayCollection",
+        "type": "object",
+        "description": "A collection of calendar days that have available timeslots",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "description": "",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/CalendarDay"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -3084,18 +3534,6 @@
             "example": "Private note about the order!",
             "nullable": true
           },
-          "payment_status": {
-            "type": "string",
-            "enum": [
-              "PAID",
-              "UNPAID"
-            ],
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "paid",
-            "description": "The payment status of the order. Defaults to \"UNPAID\". ",
-            "nullable": true
-          },
           "address_id": {
             "type": "string",
             "example": "00000000-0000-4000-8000-000000000000",
@@ -3143,7 +3581,6 @@
         ]
       },
       "PaginationLinks": {
-        "nullable": true,
         "title": "PaginationLinks",
         "type": "object",
         "description": "Related links for a paginated response.",
@@ -3187,7 +3624,6 @@
         ]
       },
       "PaginationMeta": {
-        "nullable": true,
         "title": "PaginationMeta",
         "type": "object",
         "description": "Metadata about a paginated response.",
@@ -3402,6 +3838,13 @@
             "example": 10000,
             "nullable": false,
             "min": 0
+          },
+          "duration": {
+            "type": "integer",
+            "example": 60,
+            "description": "The duration of the product item, in minutes.",
+            "nullable": false,
+            "minimum": 0
           }
         },
         "required": [
@@ -3501,6 +3944,70 @@
             "nullable": true
           }
         }
+      },
+      "Timeslot": {
+        "description": "A bookable time range, including users that are available.",
+        "type": "object",
+        "title": "Timeslot",
+        "x-internal": true,
+        "properties": {
+          "start_at": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 20,
+            "example": "2021-01-01T00:00:00Z",
+            "description": "Start time of the available slot"
+          },
+          "end_at": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 20,
+            "example": "2021-01-01T00:30:00Z",
+            "description": "End time of the available slot"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        },
+        "required": [
+          "start_at",
+          "end_at"
+        ]
+      },
+      "TimeslotCollection": {
+        "title": "TimeslotCollection",
+        "type": "object",
+        "description": "A collection of bookable timeslots.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "description": "",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Timeslot"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks"
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "UnconfirmedAppointment": {
         "title": "UnconfirmedAppointment",
