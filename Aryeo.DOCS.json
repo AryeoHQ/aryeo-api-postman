@@ -1312,8 +1312,6 @@
           {
             "schema": {
               "type": "integer",
-              "minLength": 1,
-              "maxLength": 100,
               "example": 60,
               "minimum": 1,
               "maximum": 360
@@ -1326,8 +1324,6 @@
             "schema": {
               "type": "integer",
               "example": 15,
-              "minLength": 1,
-              "maxLength": 5,
               "minimum": 1,
               "maximum": 360
             },
@@ -1338,13 +1334,14 @@
           {
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 5,
-              "example": "2"
+              "example": "America/Toronto",
+              "minLength": 5,
+              "maxLength": 50
             },
             "in": "query",
             "name": "timezone",
-            "description": "Timezone of the client. Localizes the available days"
+            "description": "The timezone of the client. Available dates results will be localized to this timezone",
+            "required": true
           },
           {
             "schema": {
@@ -1354,7 +1351,7 @@
             },
             "in": "query",
             "name": "page",
-            "description": "The requested page of results"
+            "description": "The requested page of results. Use this parameter to flip through pages when using the timeframe filter"
           },
           {
             "schema": {
@@ -1434,7 +1431,7 @@
           }
         },
         "operationId": "get-available-timeslots",
-        "description": "Fetch available timeslots for scheduling or rescheduling an appointment. Timeslots can be retrieved using a specific start & end date range, or using a timeframe. When using a timeframe, the page parameter can be used to flip through days or weeks.",
+        "description": "Fetch available timeslots for scheduling or rescheduling an appointment. Timeslots are returned for the entire day in the local timezone. \n\nResults are returned in UTC!",
         "parameters": [
           {
             "schema": {
@@ -1465,58 +1462,8 @@
           },
           {
             "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 100,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[start_at]",
-            "description": "Returns availability after start_at"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 100,
-              "format": "date-time",
-              "example": "2021-01-02T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[end_at]",
-            "description": "Returns availability before end_at"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "items": {
-                "description": "Timeframe type",
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 5,
-                "example": "MONTH"
-              },
-              "enum": [
-                "DAY",
-                "WEEK",
-                "MONTH",
-                "YEAR"
-              ],
-              "example": "MONTH",
-              "minLength": 1,
-              "maxLength": 5
-            },
-            "in": "query",
-            "name": "filter[timeframe]",
-            "description": "Returns availability for a specific timeframe. Used instead of start_at & end_at"
-          },
-          {
-            "schema": {
               "type": "integer",
               "example": 60,
-              "minLength": 1,
-              "maxLength": 100,
               "minimum": 1,
               "maximum": 360
             },
@@ -1528,8 +1475,6 @@
             "schema": {
               "type": "integer",
               "example": 25,
-              "minLength": 1,
-              "maxLength": 5,
               "minimum": 1,
               "maximum": 360
             },
@@ -1556,6 +1501,31 @@
             "in": "query",
             "name": "per_page",
             "description": "The number of results per page. Only applies when using a date range"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01",
+              "minLength": 10,
+              "maxLength": 10
+            },
+            "in": "query",
+            "name": "date",
+            "description": "The date to fetch available timeslots for",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "America/Toronto",
+              "minLength": 5,
+              "maxLength": 50
+            },
+            "in": "query",
+            "name": "timezone",
+            "description": "The timezone is used to determine the start and end time of the specified date to retrieve a full day of results.",
+            "required": true
           }
         ],
         "security": [
@@ -1566,6 +1536,299 @@
         "x-internal": false
       },
       "parameters": []
+    },
+    "/tasks": {
+      "parameters": [],
+      "get": {
+        "summary": "/tasks",
+        "tags": [
+          "tasks"
+        ],
+        "responses": {
+          "200": {
+            "description": "TaskListCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-tasks",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "25",
+              "minLength": 1,
+              "maxLength": 5
+            },
+            "in": "query",
+            "description": "The number of items per page. Defaults to 25.",
+            "name": "per_page"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "1",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "query",
+            "name": "page",
+            "description": "The requested page. Defaults to 1."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "Brendan",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "query",
+            "name": "filter[search]",
+            "description": "Query to match tasks based on the name, description and name of the parent task list."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[completed_at_gte]",
+            "description": "Returns the tasks that were completed after this date. Incomplete tasks are also returned. "
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[completed_at_lte]",
+            "description": "Returns the tasks that were completed before this date. "
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "true,false,null"
+            },
+            "in": "query",
+            "name": "filter[is_completed]",
+            "description": "Returns only completed tasks."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[due_at_gte]",
+            "description": "Returns the tasks that are due after this date. Tasks without a due date are also returned"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[due_at_lte]",
+            "description": "Returns the tasks that were due before this date."
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a task list. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[task_list_ids]",
+            "description": "Returns the tasks that belong to the given task lists."
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a user. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[assignee_ids]",
+            "description": "Returns the tasks assigned to the given users."
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a user. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[completed_by_ids]",
+            "description": "Returns the tasks that were completed by the given users."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-due_at`."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "task_list"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response."
+          }
+        ],
+        "description": "List all tasks for a group"
+      }
+    },
+    "/tasks/{task_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "task_id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "/tasks/{task_id}",
+        "tags": [
+          "tasks"
+        ],
+        "responses": {
+          "200": {
+            "description": "TaskResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-tasks-task_id",
+        "description": "Retrieve a task of a group",
+        "parameters": []
+      }
     },
     "/unconfirmed-appointments": {
       "get": {
@@ -1988,6 +2251,10 @@
       "description": "Operations related to orders."
     },
     {
+      "name": "tasks",
+      "description": "Operations related to tasks."
+    },
+    {
       "name": "vendors",
       "description": "Operations related to vendors."
     }
@@ -2118,6 +2385,14 @@
             "example": "Napa Valley",
             "minLength": 0,
             "maxLength": 255,
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "description": "The assumed timezone the address is located in.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "America/New_York",
             "nullable": true
           },
           "unparsed_address": {
@@ -2397,7 +2672,7 @@
         "type": "object",
         "description": "Payload for canceling an appointment record.",
         "properties": {
-          "notify_customer": {
+          "notify": {
             "type": "boolean",
             "description": "Sends a notification to the appointment's order's customer that the appointment was canceled.",
             "nullable": true,
@@ -2462,7 +2737,7 @@
             "nullable": true,
             "format": "date-time"
           },
-          "notify_customer": {
+          "notify": {
             "type": "boolean",
             "description": "Send a notification to the appointment's order's customer that the appointment was rescheduled.",
             "nullable": true,
@@ -2718,6 +2993,14 @@
             "example": "12345678",
             "description": "The license number of a real estate agent. Only returned if group's type is AGENT.",
             "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0,
+            "description": "The default timezone for the group.",
+            "example": "America/New_York",
+            "nullable": false
           },
           "social_profiles": {
             "$ref": "#/components/schemas/SocialProfiles",
@@ -3492,6 +3775,14 @@
             "minLength": 0,
             "maxLength": 255
           },
+          "sub_title": {
+            "type": "string",
+            "description": "The sub title of the item.",
+            "example": "10 minute video",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
           "description": {
             "type": "string",
             "description": "The description of the item.",
@@ -3966,6 +4257,192 @@
             "nullable": true
           }
         }
+      },
+      "Task": {
+        "title": "Task",
+        "type": "object",
+        "description": "A task to be done.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of the task. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the task.",
+            "example": "Create listing flyer",
+            "minLength": 1,
+            "maxLength": 255,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the task.",
+            "example": "Go into marketing materials and create a flyer for this listing",
+            "minLength": 1,
+            "maxLength": 255,
+            "nullable": true
+          },
+          "assignee": {
+            "$ref": "#/components/schemas/User"
+          },
+          "due_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the task is due.",
+            "example": "2021-06-30T21:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "completed_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the task is completed.",
+            "example": "2021-06-30T21:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "completed_by": {
+            "$ref": "#/components/schemas/User"
+          },
+          "is_completed": {
+            "type": "boolean",
+            "description": "Whether or not the task is completed.",
+            "example": true
+          },
+          "task_list": {
+            "$ref": "#/components/schemas/TaskList"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "TaskCollection": {
+        "title": "TaskCollection",
+        "type": "object",
+        "description": "A collection of tasks.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            },
+            "nullable": true
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "nullable": true
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks",
+            "nullable": true
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "TaskList": {
+        "title": "TaskList",
+        "type": "object",
+        "description": "A list of tasks.",
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object’s type. Objects of the same type share the same schema.",
+            "example": "TASK_LIST",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "id": {
+            "type": "string",
+            "description": "ID of the task list. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the task list.",
+            "example": "My grocery list",
+            "minLength": 1,
+            "maxLength": 100,
+            "nullable": false
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Listing"
+              },
+              {
+                "$ref": "#/components/schemas/Group"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the tast list was created.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": false
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "created_at"
+        ]
+      },
+      "TaskResource": {
+        "title": "TaskResource",
+        "type": "object",
+        "description": "A task response resource.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/Task",
+            "nullable": true
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "Timeslot": {
         "description": "A bookable time range, including users that are available.",
