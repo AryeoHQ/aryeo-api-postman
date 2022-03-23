@@ -116,6 +116,26 @@
           },
           {
             "schema": {
+              "type": "array",
+              "items": {
+                "description": "Status of the appointments to return",
+                "type": "string",
+                "example": "SCHEDULED",
+                "minLength": 1,
+                "maxLength": 100,
+                "enum": [
+                  "SCHEDULED",
+                  "UNSCHEDULED",
+                  "CANCELED"
+                ]
+              }
+            },
+            "in": "query",
+            "name": "filter[statuses]",
+            "description": "Filters appointment by status, defaults to SCHEDULED."
+          },
+          {
+            "schema": {
               "type": "string",
               "minLength": 1,
               "maxLength": 100,
@@ -955,7 +975,41 @@
           {
             "schema": {
               "type": "string",
-              "example": "-created_at",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "customer"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response.",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "123 Imperial"
+            },
+            "in": "query",
+            "name": "filter[search]",
+            "description": "Set to include orders with addresses or customers that match on this string."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "example": "00000000-0000-4000-8000-000000000000"
+            },
+            "in": "query",
+            "name": "filter[creator_group_id]",
+            "description": "Creator group ID used to fetch orders owned by a specific creator."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "appointment_start",
               "minLength": 1,
               "maxLength": 100
             },
@@ -1170,6 +1224,74 @@
           {
             "Token": []
           }
+        ]
+      }
+    },
+    "/order-forms": {
+      "get": {
+        "summary": "List all order forms for the current group.",
+        "responses": {
+          "200": {
+            "description": "OrderFormCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderFormCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-order-forms",
+        "description": "Lists all order forms for the current group.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "order-forms"
         ]
       }
     },
@@ -1641,7 +1763,7 @@
             },
             "in": "query",
             "name": "filter[completed_at_gte]",
-            "description": "Returns the tasks that were completed after this date. Incomplete tasks are also returned. "
+            "description": "Returns the tasks that were completed after this date. Incomplete tasks are also returned."
           },
           {
             "schema": {
@@ -1653,12 +1775,14 @@
             },
             "in": "query",
             "name": "filter[completed_at_lte]",
-            "description": "Returns the tasks that were completed before this date. "
+            "description": "Returns the tasks that were completed before this date."
           },
           {
             "schema": {
               "type": "string",
-              "example": "true,false,null"
+              "example": "true",
+              "minLength": 4,
+              "maxLength": 4
             },
             "in": "query",
             "name": "filter[is_completed]",
@@ -1738,7 +1862,10 @@
           },
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "-due_at",
+              "minLength": 1,
+              "maxLength": 36
             },
             "in": "query",
             "name": "sort",
@@ -1747,7 +1874,9 @@
           {
             "schema": {
               "type": "string",
-              "example": "task_list"
+              "example": "task_list",
+              "minLength": 1,
+              "maxLength": 255
             },
             "in": "query",
             "name": "include",
@@ -1761,11 +1890,16 @@
       "parameters": [
         {
           "schema": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "00000000-0000-0000-0000-000000000000"
           },
           "name": "task_id",
           "in": "path",
-          "required": true
+          "required": true,
+          "description": "The ID of a task."
         }
       ],
       "get": {
@@ -1838,11 +1972,11 @@
         ],
         "responses": {
           "200": {
-            "description": "UnconfirmedAppointmentCollection",
+            "description": "AppointmentCollection",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnconfirmedAppointmentCollection"
+                  "$ref": "#/components/schemas/AppointmentCollection"
                 }
               }
             }
@@ -1985,11 +2119,11 @@
         ],
         "responses": {
           "200": {
-            "description": "UnconfirmedAppointmentResource",
+            "description": "AppointmentResource",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnconfirmedAppointmentResource"
+                  "$ref": "#/components/schemas/AppointmentResource"
                 }
               }
             }
@@ -2249,6 +2383,10 @@
     {
       "name": "orders",
       "description": "Operations related to orders."
+    },
+    {
+      "name": "order-forms",
+      "description": "Operations related to order forms."
     },
     {
       "name": "tasks",
@@ -2600,7 +2738,6 @@
             "enum": [
               "SCHEDULED",
               "UNSCHEDULED",
-              "RESCHEDULED",
               "CANCELED"
             ]
           },
@@ -2637,6 +2774,51 @@
             "minLength": 0,
             "maxLength": 255,
             "nullable": true
+          },
+          "preference_type": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "TIME",
+            "description": "The type of preferred scheduling information provided by a customer to aid in scheduling this appointment.",
+            "nullable": true,
+            "enum": [
+              "ASAP",
+              "TIME",
+              "TIME_OF_DAY",
+              "NONE"
+            ]
+          },
+          "preferred_start_at": {
+            "type": "string",
+            "description": "A preferred date and time (ISO 8601 format) for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME. ",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
+          },
+          "preferred_start_at_day": {
+            "type": "string",
+            "description": "A preferred date (ISO 8601 format) for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME_OF_DAY. ",
+            "format": "date",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30",
+            "nullable": true
+          },
+          "preferred_start_at_time_of_day": {
+            "type": "string",
+            "description": "A preferred time of day for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME_OF_DAY. ",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "AFTERNOON",
+            "nullable": true,
+            "enum": [
+              "MORNING",
+              "AFTERNOON",
+              "TWILIGHT"
+            ]
           },
           "duration": {
             "type": "integer",
@@ -2773,7 +2955,7 @@
       "CalendarDay": {
         "description": "A bookable time range with available users.",
         "type": "object",
-        "title": "Timeslot",
+        "title": "CalendarDay",
         "x-internal": true,
         "properties": {
           "date": {
@@ -3345,6 +3527,20 @@
               "WITHDRAWN"
             ]
           },
+          "thumbnail_url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "example": "https://via.placeholder.com/640x480.png/0044bb?text=LISTING",
+            "description": "A URL for a thumbnail representing the listing."
+          },
+          "large_thumbnail_url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "example": "https://via.placeholder.com/1280x960.png/0044bb?text=LISTING",
+            "description": "A URL for a large thumbnail representing the listing."
+          },
           "description": {
             "type": "string",
             "description": "Description of the selling points of the building and/or land for sale. ",
@@ -3579,25 +3775,26 @@
             ],
             "minLength": 0,
             "maxLength": 255,
-            "example": "fulfilled",
+            "example": "FULFILLED",
             "nullable": false
           },
           "payment_status": {
             "type": "string",
             "enum": [
               "PAID",
+              "PARTIALLY_PAID",
               "UNPAID"
             ],
             "minLength": 0,
             "maxLength": 255,
-            "example": "paid",
+            "example": "PAID",
             "description": "The payment status of the order.",
             "nullable": false
           },
           "currency": {
             "type": "string",
             "description": "The three-letter ISO 4217 currency code for the currency in which this order was or will be transacted. Must be a supported currency of Aryeo.",
-            "example": "usd",
+            "example": "USD",
             "minLength": 0,
             "maxLength": 255,
             "enum": [
@@ -3669,8 +3866,26 @@
           "unconfirmed_appointments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnconfirmedAppointment"
+              "$ref": "#/components/schemas/Appointment"
             }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the order was created.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the order was last updated.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
           }
         },
         "required": [
@@ -3679,7 +3894,12 @@
           "title",
           "fulfillment_status",
           "payment_status",
-          "status_url"
+          "total_amount",
+          "status_url",
+          "downloads_allowed",
+          "payments_allowed",
+          "created_at",
+          "updated_at"
         ]
       },
       "OrderCollection": {
@@ -3719,7 +3939,7 @@
       "OrderForm": {
         "title": "OrderForm",
         "type": "object",
-        "description": "A mechanism for placing new orders on the Aryeo platform. ",
+        "description": "An order form is a form that is used to submit an order.",
         "properties": {
           "id": {
             "type": "string",
@@ -3736,7 +3956,7 @@
             "maxLength": 255,
             "example": "BQ's Photography Order Form",
             "description": "The title or name of the order form.",
-            "nullable": true
+            "nullable": false
           },
           "url": {
             "type": "string",
@@ -3746,11 +3966,123 @@
             "example": "https://www.aryeo.com/order-forms/00000000-0000-4000-8000-000000000000",
             "description": "A URL of a publicly-accessible webpage for this order form.",
             "nullable": false
+          },
+          "use_territory_awareness": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the order form is uses territories to filter available users and products.",
+            "nullable": false
+          },
+          "availability_style": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "TIME",
+            "description": "The scheduling style the order form should use to for timeslot selection.",
+            "nullable": false,
+            "enum": [
+              "TIME",
+              "TIME_OF_DAY",
+              "LEGACY"
+            ]
+          },
+          "slot_interval_minutes": {
+            "type": "integer",
+            "example": "60",
+            "description": "How frequently slotted available times are on the order form.",
+            "nullable": false
+          },
+          "use_automated_user_assignment": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the order form users auto-assignment of users to appointments.",
+            "nullable": false
+          },
+          "automated_user_assignment_strategy": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "RECOMMENDED",
+            "description": "The assignment strategy the order form should use to assign users to appointments, if applicable.",
+            "nullable": false,
+            "enum": [
+              "RECOMMENDED",
+              "DISTANCE",
+              "ROUND_ROBIN",
+              "PRIORITY_LIST"
+            ]
+          },
+          "show_user_names": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the order form should display user's names after they have been assigned to an appointment.",
+            "nullable": false
+          },
+          "require_upfront_payment": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the order form requires an upfront payment to place the order. ",
+            "nullable": false
+          },
+          "upfront_payment_percentage": {
+            "type": "integer",
+            "example": "50",
+            "description": "The percentage of the order form's total price that should be paid upfront.",
+            "nullable": true
+          },
+          "use_instant_appointment_scheduling": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the order form instantly schedules appointments as soon as the order is placed.",
+            "nullable": false
           }
         },
         "required": [
           "id",
-          "url"
+          "title",
+          "url",
+          "use_territory_awareness",
+          "availability_style",
+          "slot_interval_minutes",
+          "use_automated_user_assignment",
+          "automated_user_assignment_strategy",
+          "show_user_names",
+          "require_upfront_payment",
+          "use_instant_appointment_scheduling"
+        ]
+      },
+      "OrderFormCollection": {
+        "title": "OrderFormCollection",
+        "type": "object",
+        "description": "A collection of order forms.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "$ref": "#/components/schemas/OrderForm"
+            },
+            "nullable": true
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta",
+            "nullable": true
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks",
+            "nullable": true
+          }
+        },
+        "required": [
+          "status"
         ]
       },
       "OrderItem": {
@@ -3804,6 +4136,9 @@
             "description": "A positive integer representing the number of instances of this item that was or will be charged.",
             "nullable": false,
             "minimum": 0
+          },
+          "appointment": {
+            "$ref": "#/components/schemas/Appointment"
           }
         },
         "required": [
@@ -3824,7 +4159,7 @@
             ],
             "minLength": 0,
             "maxLength": 255,
-            "example": "fulfilled",
+            "example": "FULFILLED",
             "nullable": true
           },
           "internal_notes": {
@@ -4502,157 +4837,6 @@
           },
           "links": {
             "$ref": "#/components/schemas/PaginationLinks"
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "UnconfirmedAppointment": {
-        "title": "UnconfirmedAppointment",
-        "type": "object",
-        "description": "An unconfirmed appointment.",
-        "properties": {
-          "id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 255,
-            "format": "uuid",
-            "example": "00000000-0000-0000-0000-000000000000",
-            "description": "The ID of the appointment.",
-            "nullable": false
-          },
-          "title": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 65536,
-            "example": "Appointment title",
-            "description": "The title of the appointment.",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 65536,
-            "example": "Customer: John Doe\nOrder Details: Order #123",
-            "description": "The multi-line description of the appointment.",
-            "nullable": true
-          },
-          "order": {
-            "$ref": "#/components/schemas/Order"
-          },
-          "users": {
-            "description": "Users attached to the appointment.",
-            "nullable": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/User"
-            }
-          },
-          "preference_type": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "TIME",
-            "description": "The type of preferred scheduling information provided by a customer to aid in scheduling this appointment.",
-            "nullable": true,
-            "enum": [
-              "ASAP",
-              "TIME",
-              "TIME_OF_DAY"
-            ]
-          },
-          "preferred_start_at": {
-            "type": "string",
-            "description": "A preferred date and time (ISO 8601 format) for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME. ",
-            "format": "date-time",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "2021-06-30T20:30:00Z",
-            "nullable": true
-          },
-          "preferred_start_at_day": {
-            "type": "string",
-            "description": "A preferred date (ISO 8601 format) for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME_OF_DAY. ",
-            "format": "date",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "2021-06-30",
-            "nullable": true
-          },
-          "preferred_start_at_time_of_day": {
-            "type": "string",
-            "description": "A preferred time of day for when the appointment could start. Only returned if unconfirmed appointment's preference type is TIME_OF_DAY. ",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "AFTERNOON",
-            "nullable": true,
-            "enum": [
-              "MORNING",
-              "AFTERNOON",
-              "TWILIGHT"
-            ]
-          },
-          "duration": {
-            "type": "integer",
-            "description": "The estimated length of the appointment in minutes, if available.",
-            "example": 60,
-            "nullable": true
-          }
-        },
-        "required": [
-          "id"
-        ]
-      },
-      "UnconfirmedAppointmentCollection": {
-        "title": "UnconfirmedAppointmentCollection",
-        "type": "object",
-        "description": "A collection of appointments.",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "What was the state of the request?",
-            "nullable": false
-          },
-          "data": {
-            "type": "array",
-            "description": "",
-            "items": {
-              "$ref": "#/components/schemas/UnconfirmedAppointment"
-            },
-            "nullable": true
-          },
-          "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
-          },
-          "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "UnconfirmedAppointmentResource": {
-        "title": "UnconfirmedAppointmentResource",
-        "type": "object",
-        "description": "An appointment.",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "What was the state of the request?",
-            "nullable": false
-          },
-          "data": {
-            "$ref": "#/components/schemas/UnconfirmedAppointment"
           }
         },
         "required": [
