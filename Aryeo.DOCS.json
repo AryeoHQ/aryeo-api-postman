@@ -92,7 +92,7 @@
               "type": "string",
               "minLength": 0,
               "maxLength": 255,
-              "example": "owner,items,users,order,order.address,order.customer,order.customerGroup, order.listing,order.items,.order.items.appointment"
+              "example": "owner,items,users,order,order.address,order.customer,order.customerGroup,order.listing,order.items,order.items.appointment"
             },
             "in": "query",
             "name": "include",
