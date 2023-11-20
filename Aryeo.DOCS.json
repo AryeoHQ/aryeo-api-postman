@@ -26,11 +26,90 @@
     }
   ],
   "paths": {
+    "/addresses": {
+      "post": {
+        "summary": "Create an address",
+        "responses": {
+          "201": {
+            "description": "AddressResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-addresses",
+        "description": "Creates a new address.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressPostPayload"
+              }
+            }
+          },
+          "description": "AddressPostPayload"
+        },
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "x-internal": false,
+        "tags": [
+          "Addresses"
+        ]
+      }
+    },
     "/appointments": {
       "get": {
-        "summary": "List all appointments.",
+        "summary": "List all appointments",
         "tags": [
-          "appointments"
+          "Appointments"
         ],
         "responses": {
           "200": {
@@ -131,7 +210,7 @@
               }
             },
             "in": "query",
-            "name": "filter[statuses]",
+            "name": "filter[statuses][]",
             "description": "Filters appointment by status, defaults to SCHEDULED."
           },
           {
@@ -171,7 +250,7 @@
               }
             },
             "in": "query",
-            "name": "filter[user_ids]",
+            "name": "filter[user_ids][]",
             "description": "The IDs of users whose appointments will be retrieved. UUID Version 4."
           },
           {
@@ -216,6 +295,179 @@
         "x-internal": false
       }
     },
+    "/appointments/{appointment_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "00000000-0000-4000-8000-000000000000"
+          },
+          "name": "appointment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of an appointment."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve an appointment",
+        "tags": [
+          "Appointments"
+        ],
+        "responses": {
+          "200": {
+            "description": "AppointmentResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-appointments-id",
+        "description": "Retrieves the details of an appointment with the given ID.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "owner,items,users,order,order.address,order.customer,order.customerGroup, order.listing,order.items,.order.items.appointment"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response.",
+            "allowEmptyValue": true
+          }
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "x-internal": false
+      },
+      "put": {
+        "summary": "Update an appointment",
+        "operationId": "put-appointments-appointment_id",
+        "responses": {
+          "200": {
+            "description": "AppointmentResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "x-internal": false,
+        "description": "Updates the details of an appointment with the given ID.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentUpdatePutPayload"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "Appointments"
+        ]
+      }
+    },
     "/appointments/{appointment_id}/cancel": {
       "parameters": [
         {
@@ -224,7 +476,7 @@
             "format": "uuid",
             "minLength": 0,
             "maxLength": 255,
-            "example": "00000000-0000-0000-0000-000000000000"
+            "example": "00000000-0000-4000-8000-000000000000"
           },
           "name": "appointment_id",
           "in": "path",
@@ -233,7 +485,7 @@
         }
       ],
       "put": {
-        "summary": "Cancel an appointment.",
+        "summary": "Cancel an appointment",
         "operationId": "put-appointments-appointment-id-cancel",
         "responses": {
           "200": {
@@ -304,7 +556,7 @@
           }
         ],
         "tags": [
-          "appointments"
+          "Appointments"
         ],
         "parameters": [],
         "requestBody": {
@@ -326,7 +578,7 @@
             "format": "uuid",
             "minLength": 0,
             "maxLength": 255,
-            "example": "00000000-0000-0000-0000-000000000000"
+            "example": "00000000-0000-4000-8000-000000000000"
           },
           "name": "appointment_id",
           "in": "path",
@@ -335,7 +587,7 @@
         }
       ],
       "put": {
-        "summary": "Reschedule an appointment.",
+        "summary": "Reschedule an appointment",
         "operationId": "put-appointments-appointment-id-reschedule",
         "responses": {
           "200": {
@@ -406,7 +658,7 @@
           }
         ],
         "tags": [
-          "appointments"
+          "Appointments"
         ],
         "parameters": [],
         "requestBody": {
@@ -422,9 +674,9 @@
     },
     "/listings": {
       "get": {
-        "summary": "List all listings.",
+        "summary": "List all listings",
         "tags": [
-          "listings"
+          "Listings"
         ],
         "responses": {
           "200": {
@@ -671,6 +923,92 @@
             "Token": []
           }
         ]
+      },
+      "post": {
+        "summary": "Create a listing",
+        "operationId": "post-listings",
+        "responses": {
+          "201": {
+            "description": "ListingResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListingResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "ApiError409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError409"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create a listing.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListingPostPayload"
+              }
+            }
+          },
+          "description": "ListingPostPayload"
+        },
+        "tags": [
+          "Listings"
+        ]
       }
     },
     "/listings/{listing_id}": {
@@ -690,9 +1028,9 @@
         }
       ],
       "get": {
-        "summary": "Retrieve a listing.",
+        "summary": "Retrieve a listing",
         "tags": [
-          "listings"
+          "Listings"
         ],
         "responses": {
           "200": {
@@ -769,9 +1107,857 @@
         ]
       }
     },
+    "/orders": {
+      "get": {
+        "summary": "List all orders",
+        "responses": {
+          "200": {
+            "description": "OrderCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-orders",
+        "description": "Lists all orders of a group.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "items,listing,customer,appointments,appointments.users,unconfirmed_appointments,order_form,discounts,discounts.coupon"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response.",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "123 Imperial"
+            },
+            "in": "query",
+            "name": "filter[search]",
+            "description": "Return orders with addresses or customers that match on this string."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "PAID"
+            },
+            "in": "query",
+            "name": "filter[payment_status]",
+            "description": "Return orders with the specified payment status. Available payment statuses are PAID, PARTIALLY_PAID, and UNPAID."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "123 Imperial"
+            },
+            "in": "query",
+            "name": "filter[fulfillment_status]",
+            "description": "Return orders with the specified fulfillment status. Available fulfillment statuses are FULFILLED, PARTIALLY_FULFILLED, and UNFULFILLED."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[appointment_start_at_gte]",
+            "description": "Return orders with an appointment starting after this date."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "format": "date-time",
+              "example": "2021-01-01T13:00:00Z"
+            },
+            "in": "query",
+            "name": "filter[appointment_start_at_lte]",
+            "description": "Return orders with an appointment starting before this date."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "example": "00000000-0000-4000-8000-000000000000"
+            },
+            "in": "query",
+            "name": "filter[creator_group_id]",
+            "description": "Creator group ID used to fetch orders owned by a specific creator."
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a tag. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[tag_ids][]",
+            "description": "Set to include orders with tags that match any of the tags provided."
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "ID of a user. UUID Version 4.",
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "format": "uuid",
+                "example": "00000000-0000-4000-8000-000000000000"
+              }
+            },
+            "in": "query",
+            "name": "filter[user_ids][]",
+            "description": "Set to include orders that have appointments with the given users."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "appointment_start",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-created_at`."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "25",
+              "minLength": 1,
+              "maxLength": 5
+            },
+            "in": "query",
+            "name": "per_page",
+            "description": "The number of items per page. Defaults to 25."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5,
+              "example": "2"
+            },
+            "in": "query",
+            "name": "page",
+            "description": "The requested page. Defaults to 1."
+          }
+        ],
+        "tags": [
+          "Orders"
+        ]
+      },
+      "post": {
+        "summary": "Create an order",
+        "operationId": "post-orders",
+        "responses": {
+          "201": {
+            "description": "OrderResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "ApiError409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError409"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create an order.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderPostPayload"
+              }
+            }
+          },
+          "description": "OrderPostPayload"
+        }
+      }
+    },
+    "/orders/{order_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36,
+            "example": "00000000-0000-4000-8000-000000000000"
+          },
+          "name": "order_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of an order. UUID Version 4."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve an order",
+        "tags": [
+          "Orders"
+        ],
+        "responses": {
+          "200": {
+            "description": "OrderResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-orders-id",
+        "description": "Retrieves the details of an order with the given ID.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "items,listing,customer,appointments,appointments.users,unconfirmed_appointments,order_form,discounts,discounts.coupon"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response.",
+            "allowEmptyValue": true
+          }
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ]
+      }
+    },
+    "/orders/{order_id}/tags": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36,
+            "example": "00000000-0000-4000-8000-000000000000"
+          },
+          "name": "order_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of an order. UUID Version 4."
+        }
+      ],
+      "put": {
+        "summary": "Update tags on an order",
+        "tags": [
+          "Orders"
+        ],
+        "responses": {
+          "200": {
+            "description": "OrderResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "put-order-tags-tag-id",
+        "description": "Update tags of an order.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderTagsPutPayload"
+              }
+            }
+          },
+          "description": "OrderTagsPutPayload"
+        },
+        "security": [
+          {
+            "Token": []
+          }
+        ]
+      }
+    },
+    "/order-forms": {
+      "get": {
+        "summary": "List all order forms",
+        "responses": {
+          "200": {
+            "description": "OrderFormCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderFormCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-order-forms",
+        "description": "Lists all order forms for the current group.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "Order Forms"
+        ]
+      }
+    },
+    "/order-items": {
+      "post": {
+        "summary": "Create an order item",
+        "operationId": "post-order-items",
+        "responses": {
+          "201": {
+            "description": "OrderItemResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "ApiError409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError409"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create an order item.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderItemPostPayload"
+              }
+            }
+          },
+          "description": "OrderPostPayload"
+        }
+      }
+    },
+    "/order-items/{order_item_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000"
+          },
+          "name": "order_item_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of an order item. UUID Version 4."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve an order item",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "example": "resource"
+            },
+            "in": "query",
+            "name": "include",
+            "description": "Comma separated list of optional data to include in the response."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OrderItemResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-order-items-order-item-id",
+        "description": "Retrieve an order item."
+      },
+      "put": {
+        "summary": "Update an order item",
+        "tags": [
+          "Orders"
+        ],
+        "operationId": "put-order-items-order-item-id",
+        "responses": {
+          "200": {
+            "description": "OrderItemResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update an order item."
+      },
+      "delete": {
+        "summary": "Delete an order item",
+        "tags": [
+          "Orders"
+        ],
+        "operationId": "delete-order-items-order-item-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete an order item."
+      }
+    },
     "/products": {
       "get": {
-        "summary": "List all products.",
+        "summary": "List all products",
         "responses": {
           "200": {
             "description": "ProductCollection",
@@ -888,7 +2074,7 @@
               }
             },
             "in": "query",
-            "name": "filter[category_ids]",
+            "name": "filter[category_ids][]",
             "description": "Return products in the given categories."
           },
           {
@@ -904,31 +2090,21 @@
           }
         ],
         "tags": [
-          "orders"
+          "Products"
         ]
       },
       "parameters": []
     },
-    "/orders": {
+    "/product-categories": {
       "get": {
-        "summary": "List all orders.",
+        "summary": "List all product categories",
         "responses": {
           "200": {
-            "description": "OrderCollection",
+            "description": "ProductCategoryCollection",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderCollection"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
+                  "$ref": "#/components/schemas/ProductCategoryCollection"
                 }
               }
             }
@@ -964,8 +2140,8 @@
             }
           }
         },
-        "operationId": "get-orders",
-        "description": "Lists all orders of a group.",
+        "operationId": "get-product-categories",
+        "description": "List all product categories of a company.",
         "security": [
           {
             "Token": []
@@ -975,125 +2151,13 @@
           {
             "schema": {
               "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "items,listing,customer,appointments,appointments.users,unconfirmed_appointments"
-            },
-            "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response.",
-            "allowEmptyValue": true
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "123 Imperial"
-            },
-            "in": "query",
-            "name": "filter[search]",
-            "description": "Return orders with addresses or customers that match on this string."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "PAID"
-            },
-            "in": "query",
-            "name": "filter[payment_status]",
-            "description": "Return orders with the specified payment status. Available payment statuses are PAID, PARTIALLY_PAID, and UNPAID."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "123 Imperial"
-            },
-            "in": "query",
-            "name": "filter[fulfillment_status]",
-            "description": "Return orders with the specified fulfillment status. Available fulfillment statuses are FULFILLED, PARTIALLY_FULFILLED, and UNFULFILLED."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[appointment_start_at_gte]",
-            "description": "Return orders with an appointment starting after this date."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[appointment_start_at_lte]",
-            "description": "Return orders with an appointment starting before this date."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 100,
-              "example": "00000000-0000-4000-8000-000000000000"
-            },
-            "in": "query",
-            "name": "filter[creator_group_id]",
-            "description": "Creator group ID used to fetch orders owned by a specific creator."
-          },
-          {
-            "schema": {
-              "type": "array",
-              "items": {
-                "description": "ID of a tag. UUID Version 4.",
-                "type": "string",
-                "minLength": 36,
-                "maxLength": 36,
-                "format": "uuid",
-                "example": "00000000-0000-4000-8000-000000000000"
-              }
-            },
-            "in": "query",
-            "name": "filter[tag_ids]",
-            "description": "Set to include orders with tags that match any of the tags provided."
-          },
-          {
-            "schema": {
-              "type": "array",
-              "items": {
-                "description": "ID of a user. UUID Version 4.",
-                "type": "string",
-                "minLength": 36,
-                "maxLength": 36,
-                "format": "uuid",
-                "example": "00000000-0000-4000-8000-000000000000"
-              }
-            },
-            "in": "query",
-            "name": "filter[user_ids]",
-            "description": "Set to include orders that have appointments with the given users."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "appointment_start",
+              "example": "-created_at",
               "minLength": 1,
               "maxLength": 100
             },
             "in": "query",
             "name": "sort",
-            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-created_at`."
+            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `title`."
           },
           {
             "schema": {
@@ -1116,268 +2180,30 @@
             "in": "query",
             "name": "page",
             "description": "The requested page. Defaults to 1."
-          }
-        ],
-        "tags": [
-          "orders"
-        ]
-      },
-      "post": {
-        "summary": "Create an order.",
-        "operationId": "post-orders",
-        "responses": {
-          "201": {
-            "description": "OrderResource",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderResource"
-                }
-              }
-            }
           },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "ApiError404",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError404"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "ApiError409",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError409"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ApiFail422",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiFail422"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ApiError500",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError500"
-                }
-              }
-            }
-          }
-        },
-        "description": "Create an order.",
-        "tags": [
-          "orders"
-        ],
-        "security": [
-          {
-            "Token": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrderPostPayload"
-              }
-            }
-          },
-          "description": "OrderPostPayload"
-        }
-      }
-    },
-    "/orders/{order_id}": {
-      "parameters": [
-        {
-          "schema": {
-            "type": "string",
-            "format": "uuid",
-            "minLength": 36,
-            "maxLength": 36,
-            "example": "00000000-0000-4000-8000-000000000000"
-          },
-          "name": "order_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of an order. UUID Version 4."
-        }
-      ],
-      "get": {
-        "summary": "Retrieve an order.",
-        "tags": [
-          "orders"
-        ],
-        "responses": {
-          "200": {
-            "description": "OrderResource",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderResource"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "ApiError404",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError404"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ApiFail422",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiFail422"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ApiError500",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError500"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-orders-id",
-        "description": "Retrieves the details of an order with the given ID.",
-        "parameters": [
           {
             "schema": {
               "type": "string",
               "minLength": 0,
               "maxLength": 255,
-              "example": "items,listing,customer,appointments,appointments.users,unconfirmed_appointments"
+              "example": "Photography"
             },
             "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response.",
-            "allowEmptyValue": true
+            "name": "filter[search]",
+            "description": "Return product categories that have fields matching this term."
           }
         ],
-        "security": [
-          {
-            "Token": []
-          }
-        ]
-      }
-    },
-    "/order-forms": {
-      "get": {
-        "summary": "List all order forms for the current group.",
-        "responses": {
-          "200": {
-            "description": "OrderFormCollection",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderFormCollection"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "ApiError404",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError404"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ApiFail422",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiFail422"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ApiError500",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError500"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-order-forms",
-        "description": "Lists all order forms for the current group.",
-        "security": [
-          {
-            "Token": []
-          }
-        ],
-        "parameters": [],
         "tags": [
-          "order-forms"
+          "Products"
         ]
-      }
+      },
+      "parameters": []
     },
     "/scheduling/available-dates": {
       "get": {
-        "summary": "Fetch available days for a user or group",
+        "summary": "List all available days",
         "tags": [
-          "appointments"
+          "Scheduling"
         ],
         "responses": {
           "200": {
@@ -1447,7 +2273,7 @@
               }
             },
             "in": "query",
-            "name": "filter[user_ids]",
+            "name": "filter[user_ids][]",
             "description": "The IDs of users whose availability will be retrieved. UUID Version 4."
           },
           {
@@ -1534,8 +2360,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "America/Toronto",
-              "minLength": 5,
+              "example": "CST",
+              "minLength": 3,
               "maxLength": 50
             },
             "in": "query",
@@ -1574,10 +2400,7 @@
     },
     "/scheduling/available-timeslots": {
       "get": {
-        "summary": "Fetch available timeslots for a user or group",
-        "tags": [
-          "appointments"
-        ],
+        "summary": "List all available timeslots",
         "responses": {
           "200": {
             "description": "TimeslotCollection",
@@ -1646,7 +2469,7 @@
               }
             },
             "in": "query",
-            "name": "filter[user_ids]",
+            "name": "filter[user_ids][]",
             "description": "The IDs of users whose appointments will be retrieved. UUID Version 4."
           },
           {
@@ -1718,8 +2541,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "America/Toronto",
-              "minLength": 5,
+              "example": "CST",
+              "minLength": 3,
               "maxLength": 50
             },
             "in": "query",
@@ -1733,249 +2556,41 @@
             "Token": []
           }
         ],
-        "x-internal": false
+        "x-internal": false,
+        "tags": [
+          "Scheduling"
+        ]
       },
       "parameters": []
     },
-    "/tasks": {
-      "parameters": [],
-      "get": {
-        "summary": "/tasks",
-        "tags": [
-          "tasks"
-        ],
-        "responses": {
-          "200": {
-            "description": "TaskCollection",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskCollection"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "ApiError404",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError404"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ApiFail422",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiFail422"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ApiError500",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError500"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-tasks",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "example": "25",
-              "minLength": 1,
-              "maxLength": 5
-            },
-            "in": "query",
-            "description": "The number of items per page. Defaults to 25.",
-            "name": "per_page"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "1",
-              "minLength": 1,
-              "maxLength": 255
-            },
-            "in": "query",
-            "name": "page",
-            "description": "The requested page. Defaults to 1."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "Brendan",
-              "minLength": 1,
-              "maxLength": 255
-            },
-            "in": "query",
-            "name": "filter[search]",
-            "description": "Query to match tasks based on the name, description and name of the parent task list."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[completed_at_gte]",
-            "description": "Returns the tasks that were completed after this date. Incomplete tasks are also returned."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[completed_at_lte]",
-            "description": "Returns the tasks that were completed before this date."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "true",
-              "minLength": 4,
-              "maxLength": 4
-            },
-            "in": "query",
-            "name": "filter[is_completed]",
-            "description": "Returns only completed tasks."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[due_at_gte]",
-            "description": "Returns the tasks that are due after this date. Tasks without a due date are also returned"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 10,
-              "maxLength": 20,
-              "format": "date-time",
-              "example": "2021-01-01T13:00:00Z"
-            },
-            "in": "query",
-            "name": "filter[due_at_lte]",
-            "description": "Returns the tasks that were due before this date."
-          },
-          {
-            "schema": {
-              "type": "array",
-              "items": {
-                "description": "ID of a user. UUID Version 4.",
-                "type": "string",
-                "minLength": 36,
-                "maxLength": 36,
-                "format": "uuid",
-                "example": "00000000-0000-4000-8000-000000000000"
-              }
-            },
-            "in": "query",
-            "name": "filter[assignee_ids]",
-            "description": "Returns the tasks assigned to the given users."
-          },
-          {
-            "schema": {
-              "type": "array",
-              "items": {
-                "description": "ID of a user. UUID Version 4.",
-                "type": "string",
-                "minLength": 36,
-                "maxLength": 36,
-                "format": "uuid",
-                "example": "00000000-0000-4000-8000-000000000000"
-              }
-            },
-            "in": "query",
-            "name": "filter[completed_by_ids]",
-            "description": "Returns the tasks that were completed by the given users."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "-due_at",
-              "minLength": 1,
-              "maxLength": 36
-            },
-            "in": "query",
-            "name": "sort",
-            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-due_at`."
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "task_list",
-              "minLength": 1,
-              "maxLength": 255
-            },
-            "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response."
-          }
-        ],
-        "description": "List all tasks for a group"
-      }
-    },
-    "/tasks/{task_id}": {
+    "/videos/{video_id}": {
       "parameters": [
         {
           "schema": {
             "type": "string",
             "format": "uuid",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "00000000-0000-0000-0000-000000000000"
+            "minLength": 36,
+            "maxLength": 36,
+            "example": "00000000-0000-4000-8000-000000000000"
           },
-          "name": "task_id",
+          "name": "video_id",
           "in": "path",
           "required": true,
-          "description": "The ID of a task."
+          "description": "The ID of a video. UUID Version 4."
         }
       ],
       "get": {
-        "summary": "/tasks/{task_id}",
+        "summary": "Retrieve a video",
         "tags": [
-          "tasks"
+          "Listings"
         ],
         "responses": {
           "200": {
-            "description": "TaskResource",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TaskResource"
+                  "$ref": "#/components/schemas/VideoResource"
                 }
               }
             }
@@ -2021,24 +2636,161 @@
             }
           }
         },
-        "operationId": "get-tasks-task_id",
-        "description": "Retrieve a task of a group",
+        "operationId": "get-videos-video-id",
+        "description": "Retrieve a video.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
         "parameters": []
+      },
+      "put": {
+        "summary": "Update a video",
+        "operationId": "put-videos-video-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update a video.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoPutPayload"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "Listings"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a video",
+        "operationId": "delete-videos-video-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete a video.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "Listings"
+        ]
       }
     },
-    "/unconfirmed-appointments": {
-      "get": {
-        "summary": "List all unconfirmed appointments.",
-        "tags": [
-          "appointments"
-        ],
+    "/order-form-sessions": {
+      "post": {
+        "summary": "Create an order form session",
+        "operationId": "post-order-form-sessions",
         "responses": {
-          "200": {
-            "description": "AppointmentCollection",
+          "201": {
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AppointmentCollection"
+                  "$ref": "#/components/schemas/OrderFormSessionResource"
                 }
               }
             }
@@ -2084,36 +2836,194 @@
             }
           }
         },
-        "operationId": "get-unconfirmed-appointments",
-        "description": "List all unconfirmed appointments. These are appointments that have not been scheduled.",
+        "tags": [
+          "Order Forms"
+        ],
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "description": "Create an order form session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderFormSessionPostPayload"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/territories": {
+      "get": {
+        "summary": "List all territories",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TerritoryCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-territories",
+        "description": "List all territories.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
         "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "ID of an address. UUID Version 4.",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            },
+            "in": "query",
+            "name": "filter[address_id]",
+            "description": "An address ID. When set, only territories that contain this address within their bounds are returned."
+          }
+        ]
+      }
+    },
+    "/coupons": {
+      "get": {
+        "summary": "List all coupons.",
+        "description": "List all coupons.",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "CouponCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponCollection"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-coupons",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "ID of an address. UUID Version 4.",
+              "minLength": 36,
+              "maxLength": 36,
+              "example": "00000000-0000-4000-8000-000000000000",
+              "format": "uuid"
+            },
+            "in": "query",
+            "name": "filter[search]",
+            "description": "Return coupons that have a name matching this field."
+          },
           {
             "schema": {
               "type": "string",
               "minLength": 0,
               "maxLength": 255,
-              "example": "users,items,owner,order,order.address,order.customerGroup,order.listing,order.items,order.items.appointment"
+              "example": "promotion_codes"
             },
             "in": "query",
             "name": "include",
             "description": "Comma separated list of optional data to include in the response.",
             "allowEmptyValue": true
-          },
-          {
-            "schema": {
-              "type": "array",
-              "items": {
-                "description": "ID of a user. UUID Version 4.",
-                "type": "string",
-                "minLength": 36,
-                "maxLength": 36,
-                "format": "uuid",
-                "example": "00000000-0000-4000-8000-000000000000"
-              }
-            },
-            "in": "query",
-            "name": "filter[user_ids]",
-            "description": "The IDs of users whose appointments will be retrieved. UUID Version 4."
           },
           {
             "schema": {
@@ -2124,7 +3034,7 @@
             },
             "in": "query",
             "name": "sort",
-            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-start_at`."
+            "description": "Comma separated list of fields used for sorting. Placing a minus symbol in front of a field name sorts in descending order. Defaults to `-created_at`."
           },
           {
             "schema": {
@@ -2153,42 +3063,110 @@
           {
             "Token": []
           }
-        ],
-        "x-internal": false
-      },
-      "parameters": []
+        ]
+      }
     },
-    "/unconfirmed-appointments/{unconfirmed_appointment_id}": {
+    "/discounts": {
+      "post": {
+        "summary": "Create a discount",
+        "responses": {
+          "201": {
+            "description": "DiscountResource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-discounts",
+        "description": "Create a discount.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountPostPayload"
+              }
+            }
+          },
+          "description": "DiscountPostPayload"
+        },
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "x-internal": false,
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/discounts/{discount_id}": {
       "parameters": [
         {
           "schema": {
             "type": "string",
             "format": "uuid",
-            "minLength": 0,
-            "maxLength": 255,
-            "example": "00000000-0000-0000-0000-000000000000"
+            "minLength": 36,
+            "maxLength": 36,
+            "example": "00000000-0000-4000-8000-000000000000"
           },
-          "name": "unconfirmed_appointment_id",
+          "name": "discount_id",
           "in": "path",
           "required": true,
-          "description": "The ID of an appointment."
+          "description": "The ID of a discount. UUID Version 4."
         }
       ],
-      "get": {
-        "summary": "Retrieve an unconfirmed appointment.",
-        "tags": [
-          "appointments"
-        ],
+      "delete": {
+        "summary": "Delete a discount",
+        "operationId": "delete-discounts-discount-id",
         "responses": {
-          "200": {
-            "description": "AppointmentResource",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppointmentResource"
-                }
-              }
-            }
+          "204": {
+            "description": "No Content"
           },
           "403": {
             "description": "ApiError403",
@@ -2231,121 +3209,28 @@
             }
           }
         },
-        "operationId": "get-unconfirmed-appointments-id",
-        "description": "Retrieves the details of an unconfirmed appointment with the given ID.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "users,items,owner,order,order.address,order.customerGroup,order.listing,order.items,order.items.appointment"
-            },
-            "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response.",
-            "allowEmptyValue": true
-          }
-        ],
+        "description": "Delete a discount.",
         "security": [
           {
             "Token": []
           }
         ],
-        "x-internal": false
-      }
-    },
-    "/vendors": {
-      "get": {
-        "summary": "List all vendors.",
-        "responses": {
-          "200": {
-            "description": "GroupCollection",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GroupCollection"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ApiError403",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError403"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "ApiError404",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError404"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ApiFail422",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiFail422"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ApiError500",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError500"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-vendors",
-        "description": "Lists all vendors available to a group.",
-        "security": [
-          {
-            "Token": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "users,owner,default_order_form,order_forms"
-            },
-            "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response.",
-            "allowEmptyValue": true
-          }
-        ],
+        "parameters": [],
         "tags": [
-          "vendors"
+          "Products"
         ]
       }
     },
-    "/vendors/{vendor_id}": {
-      "get": {
-        "summary": "Retrieve a vendor.",
+    "/taxes": {
+      "post": {
+        "summary": "Create a tax",
         "responses": {
-          "200": {
-            "description": "GroupResource",
+          "201": {
+            "description": "TaxResource",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GroupResource"
+                  "$ref": "#/components/schemas/TaxResource"
                 }
               }
             }
@@ -2391,72 +3276,136 @@
             }
           }
         },
-        "operationId": "get-vendors-id",
-        "description": "Retrieves the details of a vendor with the given ID.",
+        "operationId": "post-taxes",
+        "description": "Create a tax.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaxPostPayload"
+              }
+            }
+          },
+          "description": "TaxPostPayload"
+        },
         "security": [
           {
             "Token": []
           }
         ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 255,
-              "example": "default_order_form,order_forms"
-            },
-            "in": "query",
-            "name": "include",
-            "description": "Comma separated list of optional data to include in the response.",
-            "allowEmptyValue": true
-          }
-        ],
+        "parameters": [],
+        "x-internal": false,
         "tags": [
-          "vendors"
+          "Products"
         ]
       },
+      "parameters": []
+    },
+    "/taxes/{tax_id}": {
       "parameters": [
         {
           "schema": {
             "type": "string",
-            "example": "00000000-0000-4000-8000-000000000000",
+            "format": "uuid",
             "minLength": 36,
             "maxLength": 36,
-            "format": "uuid"
+            "example": "00000000-0000-4000-8000-000000000000"
           },
-          "name": "vendor_id",
+          "name": "tax_id",
           "in": "path",
-          "description": "The ID of the group that is associated as a vendor. UUID Version 4.",
-          "required": true
+          "required": true,
+          "description": "The ID of a tax. UUID Version 4."
         }
-      ]
+      ],
+      "delete": {
+        "summary": "Delete a discount",
+        "operationId": "delete-taxes-tax-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "ApiError403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError403"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ApiError404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError404"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ApiFail422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiFail422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ApiError500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError500"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete a tax.",
+        "security": [
+          {
+            "Token": []
+          }
+        ],
+        "parameters": [],
+        "tags": [
+          "Products"
+        ]
+      }
     }
   },
   "tags": [
     {
-      "name": "appointments",
+      "name": "Addresses",
+      "description": "Operations related to addresses."
+    },
+    {
+      "name": "Appointments",
       "description": "Operations related to appointments."
     },
     {
-      "name": "listings",
+      "name": "Listings",
       "description": "Operations related to listings."
     },
     {
-      "name": "orders",
-      "description": "Operations related to orders."
-    },
-    {
-      "name": "order-forms",
+      "name": "Order Forms",
       "description": "Operations related to order forms."
     },
     {
-      "name": "tasks",
-      "description": "Operations related to tasks."
+      "name": "Orders",
+      "description": "Operations related to orders."
     },
     {
-      "name": "vendors",
-      "description": "Operations related to vendors."
+      "name": "Products",
+      "description": "Operations related to products."
+    },
+    {
+      "name": "Scheduling",
+      "description": "Operations related to scheduling."
     }
   ],
   "components": {
@@ -2622,6 +3571,143 @@
         },
         "required": [
           "id"
+        ]
+      },
+      "AddressPostPayload": {
+        "title": "AddressPostPayload",
+        "type": "object",
+        "x-internal": false,
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "The geographic latitude of some reference point of the location, specified in degrees and decimal parts. Positive numbers must not include the plus symbol.",
+            "example": 42.35157458574123,
+            "minimum": -180,
+            "maximum": 180,
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The geographic longitude of some reference point of the location, specified in degrees and decimal parts. Positive numbers must not include the plus symbol.",
+            "example": -71.05763741484657,
+            "maximum": 180,
+            "minimum": -180,
+            "nullable": true
+          },
+          "street_number": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "107",
+            "description": "The street number portion of a location's address. In some areas, the street number may contain non-numeric characters. This field can also contain extensions and modifiers to the street number, such as \"1/2\" or \"-B\".",
+            "nullable": true
+          },
+          "street_name": {
+            "type": "string",
+            "description": "The street name portion of a location's address.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "South St",
+            "nullable": true
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "The number or portion of a larger building or complex. Examples are: \"APT G\", \"55\", etc.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "Unit 2F",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "description": "The postal code portion of a location's address.",
+            "example": "02111",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "description": "The city of a location's address.",
+            "example": "Boston",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true
+          },
+          "city_region": {
+            "type": "string",
+            "description": "A sub-section or area of a defined city. Examples would be SoHo in New York, NY, Ironbound in Newark, NJ or Inside the Beltway.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "Leather District",
+            "nullable": true
+          },
+          "county_or_parish": {
+            "type": "string",
+            "description": "The County, Parish or other regional authority of the location.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "Suffolk County",
+            "nullable": true
+          },
+          "state_or_province": {
+            "type": "string",
+            "description": "The ISO 3166-2 subdivision code for the state or province of the location. For example, “MA” for Massachusetts, United States.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "MA",
+            "nullable": true
+          },
+          "state_or_province_region": {
+            "type": "string",
+            "description": "A sub-section or area of a defined state or province. Examples would be the Keys in FL or Hudson Valley in NY.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "Cape Cod",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "The ISO 3166-1 country code for this for the country of the location.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "US",
+            "nullable": true
+          },
+          "country_region": {
+            "type": "string",
+            "description": "A sub-section or area of a defined country. Examples would be Napa Valley in the US, or the Amalfi Coast in Italy.",
+            "example": "Napa Valley",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      },
+      "AddressResource": {
+        "title": "AddressResource",
+        "type": "object",
+        "description": "An address.",
+        "x-internal": false,
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/Address"
+          }
+        },
+        "required": [
+          "status"
         ]
       },
       "ApiError403": {
@@ -2853,6 +3939,15 @@
             "example": "2021-06-30T20:30:00Z",
             "nullable": true
           },
+          "previous_start_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the appointment was previously scheduled for.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
+          },
           "preference_type": {
             "type": "string",
             "minLength": 0,
@@ -2905,6 +4000,11 @@
             "example": 60,
             "nullable": true
           },
+          "user_has_appointments_manage_permission": {
+            "type": "boolean",
+            "example": true,
+            "description": "Does the authorized user have the availability to manage this appointment?"
+          },
           "order": {
             "$ref": "#/components/schemas/Order"
           },
@@ -2922,6 +4022,30 @@
             "items": {
               "$ref": "#/components/schemas/OrderItem"
             }
+          },
+          "can_cancel": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the request user can cancel the appointment.",
+            "nullable": true
+          },
+          "can_reschedule": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the request user can reschedule the appointment.",
+            "nullable": true
+          },
+          "is_within_cancellation_lock_period": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the appointment is within the cancellation lock period.",
+            "nullable": true
+          },
+          "is_within_rescheduling_lock_period": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the appointment is within the cancellation lock period.",
+            "nullable": true
           }
         },
         "required": [
@@ -2937,7 +4061,7 @@
             "type": "boolean",
             "description": "Sends a notification to the appointment's order's customer that the appointment was canceled.",
             "nullable": true,
-            "example": "false"
+            "example": true
           }
         }
       },
@@ -2956,19 +4080,17 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "items": {
               "$ref": "#/components/schemas/Appointment"
             },
             "nullable": true
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -3002,7 +4124,7 @@
             "type": "boolean",
             "description": "Send a notification to the appointment's order's customer that the appointment was rescheduled.",
             "nullable": true,
-            "example": "false"
+            "example": true
           }
         },
         "required": [
@@ -3031,6 +4153,61 @@
           "status"
         ]
       },
+      "AppointmentUpdatePutPayload": {
+        "title": "AppointmentUpdatePutPayload",
+        "type": "object",
+        "description": "Payload for updating an appointment record.",
+        "properties": {
+          "start_at": {
+            "type": "string",
+            "description": "The new date and time (ISO 8601 format) when the appointment is set to start.",
+            "example": "2021-06-30T20:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "end_at": {
+            "type": "string",
+            "description": "The new date and time (ISO 8601 format) when the appointment is set to end.",
+            "example": "2021-06-30T21:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "user_ids": {
+            "type": "array",
+            "description": "Array of user IDs to attach to the appointment.",
+            "items": {
+              "description": "ID of a user. UUID Version 4.",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            }
+          },
+          "item_ids": {
+            "type": "array",
+            "description": "Array of order item IDs to attach to the appointment.",
+            "items": {
+              "description": "ID of an order item. UUID Version 4.",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            }
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "Sends a notification to the appointment's order's customer that the appointment was canceled.",
+            "nullable": true,
+            "example": true
+          }
+        }
+      },
       "CalendarDay": {
         "description": "A bookable time range with available users.",
         "type": "object",
@@ -3046,7 +4223,7 @@
           },
           "is_available": {
             "type": "boolean",
-            "example": "true",
+            "example": true,
             "description": "Does the day have availability?"
           }
         },
@@ -3070,10 +4247,221 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/CalendarDay"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/CalendarDayCollectionMeta"
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CalendarDayCollectionMeta": {
+        "title": "CalendarDayCollectionMeta",
+        "type": "object",
+        "description": "Metadata about a calendar day paginated response.",
+        "properties": {
+          "group_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "description": "The ID of the group.",
+            "nullable": true
+          },
+          "company_id": {
+            "type": "string",
+            "description": "The ID of the group (company).",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000"
+          },
+          "company_team_member_ids": {
+            "type": "array",
+            "description": "Array of company team member IDs.",
+            "items": {
+              "description": "ID of a user. UUID Version 4.",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            }
+          },
+          "user_ids": {
+            "type": "array",
+            "description": "Array of user IDs.",
+            "items": {
+              "description": "ID of a user. UUID Version 4.",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            }
+          },
+          "appointment_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the appointment that is scheduled to service this order item. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36,
+            "nullable": true
+          },
+          "start_at": {
+            "type": "string",
+            "description": "Range start time.",
+            "example": "2021-06-30T20:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "end_at": {
+            "type": "string",
+            "description": "Range end time.",
+            "example": "2021-06-30T21:30:00Z",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true,
+            "format": "date-time"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "The timezone.",
+            "minLength": 3,
+            "maxLength": 255,
+            "example": "CST",
+            "nullable": true
+          },
+          "is_twilight": {
+            "type": "boolean",
+            "example": true,
+            "description": "Is twlight?",
+            "nullable": true
+          },
+          "interval": {
+            "type": "integer",
+            "example": 30,
+            "description": "Interval length.",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "example": 0,
+            "description": "Duration length.",
+            "nullable": true
+          },
+          "current_page": {
+            "type": "integer",
+            "description": "The current page.",
+            "example": 1,
+            "nullable": false
+          },
+          "timeframe": {
+            "type": "string",
+            "description": "Timeframe.",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "DAY",
+            "nullable": true
+          }
+        },
+        "required": [
+          "current_page"
+        ]
+      },
+      "Coupon": {
+        "title": "Coupon",
+        "type": "object",
+        "description": "A coupon contains information about a percent-off or amount-off discount you might want to apply to an order.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the coupon. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the coupon displayed to customers on orders.",
+            "example": "VIP Customer Discount",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "percent_off": {
+            "type": "number",
+            "description": "A decimal value representing the percent that will be taken off the subtotal of an order this coupon is applied to. For example, 0.500 would represent an applied discount of 50%, meaning an order with a subtotal of $100 would result in a balance of $50.",
+            "format": "float",
+            "example": 0.075,
+            "minimum": 0,
+            "maximum": 1
+          },
+          "amount_off": {
+            "type": "integer",
+            "description": "Amount that will be taken off the subtotal of any orders this coupon is applied to. Amount represented in the smallest currency unit (that is, 100 cents for $1.00).",
+            "example": 2500
+          },
+          "promotion_codes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionCode"
+            }
+          },
+          "discountables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Discountable"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the order was created.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CouponCollection": {
+        "title": "CouponCollection",
+        "type": "object",
+        "description": "A collection of coupons.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "description": "A collection of objects.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Coupon"
             }
           },
           "meta": {
@@ -3085,6 +4473,225 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "CustomerGroup": {
+        "title": "CustomerGroup",
+        "type": "object",
+        "description": "Customer groups are used to group multiple customers together, allowing you to apply settings such as price overrides and billing customer configurations in bulk.",
+        "x-internal": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36,
+            "description": "ID of the address. UUID Version 4.",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0,
+            "description": "The name of the customer group.",
+            "example": "John Doe Customer Group",
+            "nullable": false
+          },
+          "affiliate_id": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0,
+            "description": "The affliate ID for the customer group.",
+            "example": "JOHN_DOE",
+            "nullable": true
+          },
+          "billing_customer": {
+            "$ref": "#/components/schemas/Group"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "Discount": {
+        "title": "Discount",
+        "type": "object",
+        "description": "A discount represents the application of a coupon to an order or order item. It includes the calculated amount to be discounted based on the coupon configuration.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the discount. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "total_discount_amount": {
+            "type": "integer",
+            "description": "The total discount amount.",
+            "example": 1000
+          },
+          "coupon": {
+            "$ref": "#/components/schemas/Coupon"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "DiscountAmount": {
+        "title": "DiscountAmount",
+        "type": "object",
+        "description": "A discount amount.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the item. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "discount": {
+            "$ref": "#/components/schemas/Discount"
+          },
+          "amount": {
+            "type": "integer",
+            "example": 2999,
+            "description": "The amount of discount that was applied"
+          },
+          "applied_percent_off": {
+            "example": 0.2,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Representation of percent off ranging from 0 to 1",
+            "nullable": true
+          },
+          "applied_amount_off": {
+            "description": "Amount discounted in cents",
+            "example": 2500,
+            "type": "integer",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the order was created.",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "2021-06-30T20:30:00Z",
+            "nullable": true
+          }
+        }
+      },
+      "DiscountPostPayload": {
+        "title": "DiscountPostPayload",
+        "type": "object",
+        "description": "Payload for creating a discount.",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the order apply this coupon to. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "coupon_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the coupon to apply. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "coupon_data": {
+            "type": "object",
+            "description": "Data to construct an ad hoc coupon inline to apply to this order. If you create a coupon upfront, pass the coupon_id parameter. Otherwise, this coupon_data will be used to scaffold a new ad hoc Coupon.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the coupon displayed to customers on orders.",
+                "example": "VIP Customer Discount",
+                "nullable": false,
+                "minLength": 0,
+                "maxLength": 255
+              },
+              "percent_off": {
+                "type": "number",
+                "description": "A decimal value representing the percent that will be taken off the subtotal of an order this coupon is applied to. For example, 0.500 would represent an applied discount of 50%, meaning an order with a subtotal of $100 would result in a balance of $50. Required if amount_off is null.",
+                "format": "float",
+                "example": 0.075,
+                "minimum": 0,
+                "maximum": 1
+              },
+              "amount_off": {
+                "type": "integer",
+                "description": "Amount that will be taken off the subtotal of any orders this coupon is applied to. Amount represented in the smallest currency unit (that is, 100 cents for $1.00). Required if percent_off is null.",
+                "example": 2500
+              }
+            }
+          }
+        },
+        "required": [
+          "order_id"
+        ]
+      },
+      "DiscountResource": {
+        "title": "DiscountResource",
+        "type": "object",
+        "description": "A discount. ",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/Discount"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "Discountable": {
+        "title": "Discountable",
+        "type": "object",
+        "description": "A discountable maps a coupon to a product or fee the coupon should exclusively apply to. ",
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object’s type. Objects of the same type share the same schema.",
+            "example": "DISCOUNTABLE",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the discountable. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "discountable": {
+            "type": "object",
+            "description": "A resource representing a Fee or a Product."
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "FloorPlan": {
@@ -3230,15 +4837,6 @@
             "example": "https://via.placeholder.com/300.jpg",
             "nullable": true
           },
-          "avatar_url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://via.placeholder.com/300.jpg",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "The profile image URL of a real estate agent. Only returned if group's type is AGENT.",
-            "nullable": true
-          },
           "office_name": {
             "type": "string",
             "example": "John Doe Brokerage",
@@ -3288,12 +4886,10 @@
             "nullable": true
           },
           "social_profiles": {
-            "$ref": "#/components/schemas/SocialProfiles",
-            "nullable": true
+            "$ref": "#/components/schemas/SocialProfiles"
           },
           "default_order_form": {
-            "$ref": "#/components/schemas/OrderForm",
-            "nullable": true
+            "$ref": "#/components/schemas/OrderForm"
           },
           "use_territory_awareness": {
             "type": "boolean",
@@ -3316,7 +4912,7 @@
           },
           "slot_interval_minutes": {
             "type": "integer",
-            "example": "60",
+            "example": 60,
             "description": "How frequently slotted available times are on the order form by default.",
             "nullable": true
           },
@@ -3355,91 +4951,27 @@
           "order_forms": {
             "type": "array",
             "description": "An array of order forms a vendor group provides for placing orders. Only returned if group's type is CREATOR. ",
+            "nullable": true,
             "items": {
               "$ref": "#/components/schemas/OrderForm"
-            },
-            "nullable": true
+            }
           },
           "owner": {
-            "$ref": "#/components/schemas/User",
-            "nullable": true
+            "$ref": "#/components/schemas/User"
           },
           "users": {
             "type": "array",
             "description": "The Aryeo users associated with this group.",
+            "nullable": true,
             "items": {
               "$ref": "#/components/schemas/User"
-            },
-            "nullable": true
-          },
-          "is_brokerage_or_brokerage_agent": {
-            "type": "boolean",
-            "description": "Does this group represent a brokerage or an agent who belongs to a brokerage?",
-            "example": true,
-            "nullable": false
+            }
           }
         },
         "required": [
           "id",
           "type",
-          "name",
-          "is_brokerage_or_brokerage_agent"
-        ]
-      },
-      "GroupCollection": {
-        "title": "GroupCollection",
-        "type": "object",
-        "description": "A collection of groups.",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "What was the state of the request?",
-            "nullable": false
-          },
-          "data": {
-            "type": "array",
-            "description": "",
-            "items": {
-              "$ref": "#/components/schemas/Group"
-            },
-            "nullable": true
-          },
-          "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
-          },
-          "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "GroupResource": {
-        "title": "GroupResource",
-        "type": "object",
-        "description": "A group.",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "What was the state of the request?",
-            "nullable": false
-          },
-          "data": {
-            "$ref": "#/components/schemas/Group",
-            "nullable": true
-          }
-        },
-        "required": [
-          "status"
+          "name"
         ]
       },
       "Image": {
@@ -3474,6 +5006,14 @@
             "format": "uri",
             "nullable": false
           },
+          "filename": {
+            "type": "string",
+            "description": "The name of the file.",
+            "example": "image.jpg",
+            "minLength": 1,
+            "maxLength": 255,
+            "nullable": false
+          },
           "original_url": {
             "type": "string",
             "description": "A URL for the original, full-resolution version of the image. Useful for downloading.",
@@ -3500,7 +5040,7 @@
           "display_in_gallery": {
             "type": "boolean",
             "description": "Should the image be displayed in a gallery?",
-            "example": "true",
+            "example": true,
             "nullable": false
           }
         },
@@ -3508,6 +5048,7 @@
           "id",
           "thumbnail_url",
           "large_url",
+          "filename",
           "original_url",
           "display_in_gallery"
         ]
@@ -3692,14 +5233,16 @@
             "minLength": 1,
             "maxLength": 65536,
             "example": "https://via.placeholder.com/640x480.png/0044bb?text=LISTING",
-            "description": "A URL for a thumbnail representing the listing."
+            "description": "A URL for a thumbnail representing the listing.",
+            "nullable": true
           },
           "large_thumbnail_url": {
             "type": "string",
             "minLength": 1,
             "maxLength": 65536,
             "example": "https://via.placeholder.com/1280x960.png/0044bb?text=LISTING",
-            "description": "A URL for a large thumbnail representing the listing."
+            "description": "A URL for a large thumbnail representing the listing.",
+            "nullable": true
           },
           "description": {
             "type": "string",
@@ -3755,6 +5298,13 @@
           "property_website": {
             "$ref": "#/components/schemas/PropertyWebsite"
           },
+          "marketing_materials": {
+            "type": "array",
+            "description": "Marketing materials for this listing. ",
+            "items": {
+              "$ref": "#/components/schemas/MarketingMaterial"
+            }
+          },
           "orders": {
             "type": "array",
             "description": "orders",
@@ -3765,6 +5315,12 @@
           "downloads_enabled": {
             "type": "boolean",
             "description": "Are downloads enabled for this listing?",
+            "example": true,
+            "nullable": false
+          },
+          "is_showcase": {
+            "type": "boolean",
+            "description": "Indicates if this is a Showcase listing",
             "example": true,
             "nullable": false
           }
@@ -3804,6 +5360,12 @@
             "description": "Year the property was built.",
             "example": 1960,
             "nullable": true
+          },
+          "bedrooms_number": {
+            "type": "number",
+            "description": "Total number of bedrooms.",
+            "example": 4,
+            "deprecated": true
           }
         }
       },
@@ -3822,19 +5384,17 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "items": {
               "$ref": "#/components/schemas/Listing"
             },
             "nullable": true
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -3861,6 +5421,82 @@
             "minimum": 0
           }
         }
+      },
+      "ListingPostPayload": {
+        "title": "ListingPostPayload",
+        "type": "object",
+        "description": "Payload for creating a listing.",
+        "properties": {
+          "address_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the address to associate with the listing. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "list_agent_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the customer to associate as the listing agent on the listing. UUID Versio",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "co_list_agent_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the customer to associate as the co-listing agent on the listing. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "order_ids": {
+            "type": "array",
+            "description": "IDs of the orders to associate with this listing. ",
+            "items": {
+              "type": "string",
+              "description": "ID of the item to associate with this order.",
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000",
+              "minLength": 36,
+              "maxLength": 36
+            }
+          },
+          "sections": {
+            "type": "object",
+            "description": "Media sections to include for this listing.",
+            "properties": {
+              "images": {
+                "type": "boolean",
+                "example": true,
+                "default": false,
+                "description": "Include the images section when creating this listing. "
+              },
+              "videos": {
+                "type": "boolean",
+                "example": true,
+                "default": false,
+                "description": "Include the videos section when creating this listing. "
+              },
+              "floor_plans": {
+                "type": "boolean",
+                "example": true,
+                "default": false,
+                "description": "Include the floor plans section when creating this listing. "
+              },
+              "interactive_content": {
+                "type": "boolean",
+                "example": true,
+                "default": false,
+                "description": "Include the interactive content section when creating this listing. "
+              }
+            }
+          }
+        },
+        "required": [
+          "address_id"
+        ]
       },
       "ListingPrice": {
         "title": "ListingPrice",
@@ -3890,13 +5526,72 @@
             "nullable": false
           },
           "data": {
-            "$ref": "#/components/schemas/Listing",
-            "nullable": true
+            "$ref": "#/components/schemas/Listing"
           }
         },
         "required": [
           "status"
         ]
+      },
+      "MarketingMaterial": {
+        "title": "MarketingMaterial",
+        "type": "object",
+        "description": "A marketing material record.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "The ID of the marketing material. UUID Version 4.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "example": "New marketing material",
+            "description": "The name of the marketing material.",
+            "nullable": true
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "description": "A URL for a thumbnail-sized preview of the marketing material.",
+            "example": "https://via.placeholder.com/250x200.jpg",
+            "minLength": 1,
+            "maxLength": 65535,
+            "format": "uri",
+            "nullable": false
+          },
+          "published_at": {
+            "type": "string",
+            "description": "The date and time (ISO 8601 format) when the marketing material record was last published.",
+            "example": "2021-06-30T20:30:00Z",
+            "format": "date-time",
+            "minLength": 0,
+            "maxLength": 255,
+            "nullable": true
+          },
+          "polotno_json": {
+            "$ref": "#/components/schemas/PolotnoJson"
+          },
+          "listing_download_hash": {
+            "type": "string",
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "minLength": 36,
+            "maxLength": 36,
+            "description": "The ID of the listing the marketing material belongs to. UUID Version 4.",
+            "nullable": true
+          },
+          "json_updated_at": {
+            "type": "number",
+            "description": "Timestamp of when the polotno_json field was last updated.",
+            "example": 1624057368000,
+            "nullable": true
+          }
+        }
       },
       "Order": {
         "title": "Order",
@@ -3935,7 +5630,7 @@
             ],
             "minLength": 0,
             "maxLength": 255,
-            "example": "fulfilled",
+            "example": "GHOST",
             "nullable": false
           },
           "fulfillment_status": {
@@ -4011,6 +5706,14 @@
             "minLength": 0,
             "nullable": true
           },
+          "invoice_url": {
+            "type": "string",
+            "description": "A URL of a publicly-accessible pdf invoice of the order.",
+            "example": "https://app.aryeo.test/orders/00000000-0000-4000-8000-000000000000/invoice/download",
+            "maxLength": 65535,
+            "minLength": 0,
+            "nullable": true
+          },
           "downloads_allowed": {
             "type": "boolean",
             "description": "Indicates if the current user is allowed to download content from the attached listing.",
@@ -4027,8 +5730,28 @@
           "customer": {
             "$ref": "#/components/schemas/Group"
           },
+          "customer_group": {
+            "$ref": "#/components/schemas/CustomerGroup"
+          },
           "listing": {
             "$ref": "#/components/schemas/Listing"
+          },
+          "order_form": {
+            "$ref": "#/components/schemas/OrderForm"
+          },
+          "discounts": {
+            "type": "array",
+            "description": "The list of discounts applied to the order.",
+            "items": {
+              "$ref": "#/components/schemas/Discount"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "The list of tags applied to the order.",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
           },
           "items": {
             "type": "array",
@@ -4095,19 +5818,17 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "items": {
               "$ref": "#/components/schemas/Order"
             },
             "nullable": true
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -4178,7 +5899,7 @@
           },
           "slot_interval_minutes": {
             "type": "integer",
-            "example": "60",
+            "example": 60,
             "description": "How frequently slotted available times are on the order form.",
             "nullable": false
           },
@@ -4216,7 +5937,7 @@
           },
           "upfront_payment_percentage": {
             "type": "integer",
-            "example": "50",
+            "example": 50,
             "description": "The percentage of the order form's total price that should be paid upfront.",
             "nullable": true
           },
@@ -4249,19 +5970,336 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "items": {
               "$ref": "#/components/schemas/OrderForm"
             },
             "nullable": true
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "OrderFormSession": {
+        "title": "OrderFormSession",
+        "type": "object",
+        "description": "An order form session is used to pre-fill information about an order being placed via an order form. Through the session, you can also configure other display settings for an order form during that session. ",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "minLength": 36,
+            "maxLength": 36,
+            "description": "ID of the order form. UUID Version 4.",
+            "nullable": false
+          },
+          "order_form": {
+            "$ref": "#/components/schemas/OrderForm"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Group"
+          },
+          "coupons": {
+            "description": "Coupons that should be automatically applied during this order form session.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Coupon"
+            }
+          },
+          "show_header": {
+            "type": "boolean",
+            "example": true,
+            "description": "If the header of the order form is hidden or shown during the booking process."
+          },
+          "step_visibility": {
+            "type": "object",
+            "description": "Settings for hidding or showing certain steps of the order form during the booking process. Note, steps can only be hidden if all required information is supplied in the OrderFormSession.",
+            "properties": {
+              "show_address_step": {
+                "type": "boolean",
+                "example": true,
+                "description": "If the address step is hidden or shown during the booking process. Only applicable if address_id or address_data parameters are set."
+              },
+              "show_customer_step": {
+                "type": "boolean",
+                "example": true,
+                "description": "If the customer step is hidden or shown during the booking process. Only applicable if customer_id or customer_data parameters are set."
+              }
+            }
+          },
+          "success_url": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "The URL the customer will be directed to after the payment or order placement is successful. By default, customers are directed to the Aryeo order confirmation page.",
+            "format": "uri",
+            "example": "https://my-company.aryeo.com/order-forms/00000000-0000-4000-8000-000000000000/order-confirmation"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "The URL of the order form session. Redirect customers to this URL to take them to correct order form.",
+            "format": "uri",
+            "example": "https://my-company.aryeo.com/order-form-sessions/00000000-0000-4000-8000-000000000000"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "OrderFormSessionPostPayload": {
+        "title": "OrderFormSessionPostPayload",
+        "type": "object",
+        "description": "Payload for creating an OrderFormSession to be used for an order form.",
+        "properties": {
+          "order_form_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "description": "ID of an order form to associate with the order form session. UUID Version 4."
+          },
+          "address_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of an address to associate with the order form session. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "address_data": {
+            "type": "object",
+            "description": "Data used to generate a new Address object inline. If you create an address upfront, pass the address_id parameter. Otherwise, this address_data will be used to scaffold a new Address object, if present.",
+            "properties": {
+              "latitude": {
+                "type": "number",
+                "description": "The geographic latitude of some reference point of the location, specified in degrees and decimal parts. Positive numbers must not include the plus symbol.",
+                "example": 42.35157458574123,
+                "minimum": -180,
+                "maximum": 180,
+                "nullable": true
+              },
+              "longitude": {
+                "type": "number",
+                "description": "The geographic longitude of some reference point of the location, specified in degrees and decimal parts. Positive numbers must not include the plus symbol.",
+                "example": -71.05763741484657,
+                "maximum": 180,
+                "minimum": -180,
+                "nullable": true
+              },
+              "street_number": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "107",
+                "description": "The street number portion of a location's address. In some areas, the street number may contain non-numeric characters. This field can also contain extensions and modifiers to the street number, such as \"1/2\" or \"-B\".",
+                "nullable": true
+              },
+              "street_name": {
+                "type": "string",
+                "description": "The street name portion of a location's address.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "South St",
+                "nullable": true
+              },
+              "unit_number": {
+                "type": "string",
+                "description": "The number or portion of a larger building or complex. Examples are: \"APT G\", \"55\", etc.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "Unit 2F",
+                "nullable": true
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code portion of a location's address.",
+                "example": "02111",
+                "minLength": 0,
+                "maxLength": 255,
+                "nullable": true
+              },
+              "city": {
+                "type": "string",
+                "description": "The city of a location's address.",
+                "example": "Boston",
+                "minLength": 0,
+                "maxLength": 255,
+                "nullable": true
+              },
+              "city_region": {
+                "type": "string",
+                "description": "A sub-section or area of a defined city. Examples would be SoHo in New York, NY, Ironbound in Newark, NJ or Inside the Beltway.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "Leather District",
+                "nullable": true
+              },
+              "county_or_parish": {
+                "type": "string",
+                "description": "The County, Parish or other regional authority of the location.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "Suffolk County",
+                "nullable": true
+              },
+              "state_or_province": {
+                "type": "string",
+                "description": "The ISO 3166-2 subdivision code for the state or province of the location. For example, “MA” for Massachusetts, United States.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "MA",
+                "nullable": true
+              },
+              "state_or_province_region": {
+                "type": "string",
+                "description": "A sub-section or area of a defined state or province. Examples would be the Keys in FL or Hudson Valley in NY.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "Cape Cod",
+                "nullable": true
+              },
+              "country": {
+                "type": "string",
+                "description": "The ISO 3166-1 country code for this for the country of the location.",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "US",
+                "nullable": true
+              },
+              "country_region": {
+                "type": "string",
+                "description": "A sub-section or area of a defined country. Examples would be Napa Valley in the US, or the Amalfi Coast in Italy.",
+                "example": "Napa Valley",
+                "minLength": 0,
+                "maxLength": 255,
+                "nullable": true
+              }
+            }
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the customer to associate with the order form session. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "customer_data": {
+            "type": "object",
+            "description": "Data used to generate or retrieve a Customer object inline. If you create an customer upfront, pass the customer_id parameter. Otherwise, this customer_data will be used to scaffold a new Customer (Group) object, if present.",
+            "properties": {
+              "sso_id": {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 0,
+                "example": "auth0_1234567890",
+                "description": "Single sign on identifier of the customer user. "
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "john.doe@gmail.com",
+                "description": "Email address of the user.",
+                "nullable": false
+              },
+              "first_name": {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 0,
+                "example": "John",
+                "description": "First name of the user.",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 255,
+                "example": "Doe",
+                "description": "Last name of the user.",
+                "nullable": true
+              },
+              "phone": {
+                "type": "string",
+                "example": "(123) 456-7890",
+                "minLength": 0,
+                "maxLength": 255,
+                "description": "A phone number represented in whichever standards specified by the user, typically ###-###-#### (separated by hyphens).",
+                "nullable": true
+              }
+            }
+          },
+          "coupon_ids": {
+            "type": "array",
+            "description": "IDs of the coupons to associate with this order. ",
+            "items": {
+              "type": "string",
+              "description": "ID of the item to associate with this coupon. ",
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000",
+              "minLength": 36,
+              "maxLength": 36
+            }
+          },
+          "step_visibility": {
+            "type": "object",
+            "description": "Settings for hidding or showing certain steps of the order form during the booking process. Note, steps can only be hidden if all required information is supplied in the OrderFormSession. By default, all steps are shown.",
+            "properties": {
+              "show_address_step": {
+                "type": "boolean",
+                "example": true,
+                "description": "If the address step is hidden or shown during the booking process. Only applicable if address_id or address_data parameters are set."
+              },
+              "show_customer_step": {
+                "type": "boolean",
+                "example": true,
+                "description": "If the customer step is hidden or shown during the booking process. Only applicable if customer_id or customer_data parameters are set."
+              }
+            }
+          },
+          "success_url": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "The URL the customer will be directed to after the payment or order placement is successful. By default, customers are directed to the Aryeo order confirmation page.",
+            "format": "uri",
+            "example": "https://my-company.aryeo.com/order-forms/00000000-0000-4000-8000-000000000000/order-confirmation"
+          }
+        },
+        "required": [
+          "order_form_id"
+        ]
+      },
+      "OrderFormSessionResource": {
+        "title": "OrderResource",
+        "type": "object",
+        "description": "An order.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderFormSession"
           }
         },
         "required": [
@@ -4271,7 +6309,7 @@
       "OrderItem": {
         "title": "OrderItem",
         "type": "object",
-        "description": "A product associated with an order.",
+        "description": "An individual service or charge of an order. Order items can capture products serviced by or fees applied to an order. ",
         "properties": {
           "id": {
             "type": "string",
@@ -4290,7 +6328,7 @@
             "minLength": 0,
             "maxLength": 255
           },
-          "sub_title": {
+          "subtitle": {
             "type": "string",
             "description": "The sub title of the item.",
             "example": "10 minute video",
@@ -4306,13 +6344,6 @@
             "minLength": 0,
             "maxLength": 255
           },
-          "amount": {
-            "type": "integer",
-            "example": 2099,
-            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the cost of a single instance of this item. This is multiplied by the quantity to calculate what was or will be charged.",
-            "nullable": false,
-            "minimum": 0
-          },
           "purchasable_type": {
             "type": "string",
             "description": "The type of order item.",
@@ -4326,19 +6357,160 @@
             "example": "FEE",
             "nullable": false
           },
+          "amount": {
+            "type": "integer",
+            "example": 2099,
+            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the cost of a single instance of this item. This is multiplied by the quantity to calculate what was or will be charged. Legacy version of unit_price_amount.",
+            "nullable": false,
+            "minimum": 0
+          },
+          "unit_price_amount": {
+            "type": "integer",
+            "example": 2099,
+            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the cost of a single instance of this item. This is multiplied by the quantity to calculate what was or will be charged.",
+            "nullable": false,
+            "minimum": 0
+          },
           "quantity": {
             "type": "integer",
             "example": 2,
-            "description": "A positive integer representing the number of instances of this item that was or will be charged.",
+            "description": "A positive integer representing the number of instances of this item that was or will be serviced.",
+            "nullable": false,
+            "minimum": 0
+          },
+          "gross_total_amount": {
+            "type": "integer",
+            "example": 4198,
+            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the total cost of this item (before discounts and taxes have been applied) to be charge.",
             "nullable": false,
             "minimum": 0
           },
           "appointment": {
             "$ref": "#/components/schemas/Appointment"
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountAmount"
+            }
+          },
+          "order": {
+            "$ref": "#/components/schemas/Order"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "product_variant": {
+            "$ref": "#/components/schemas/ProductVariant"
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tax"
+            }
           }
         },
         "required": [
           "id"
+        ]
+      },
+      "OrderItemPostPayload": {
+        "title": "OrderItemPostPayload",
+        "type": "object",
+        "description": "Payload for creating an order item.",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the order to associate this order item to. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "product_variant_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the product variant to create this order item from. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 3,
+            "description": "A positive integer representing the number of instances of this item that was or will be serviced."
+          },
+          "unit_price_amount": {
+            "type": "integer",
+            "example": 2099,
+            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the cost of a single instance of this item. This is multiplied by the quantity to calculate what was or will be charged. Required when a product variant ID is not specified.",
+            "nullable": false,
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the item. Required when a product variant ID is not specified.",
+            "example": "Aerial Video",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "The subtitle of the item. Required when a product variant ID is not specified.",
+            "example": "3000-3999 square feet",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the item. Required when a product variant ID is not specified.",
+            "example": "A fly-by drone video of the property.",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "appointment_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the appointment that is scheduled to service this order item. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "assigned_company_team_member_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the company team member assigned to this order item. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          }
+        },
+        "required": [
+          "order_id"
+        ]
+      },
+      "OrderItemResource": {
+        "title": "OrderItemResource",
+        "type": "object",
+        "description": "An order item.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderItem"
+          }
+        },
+        "required": [
+          "status"
         ]
       },
       "OrderPostPayload": {
@@ -4399,6 +6571,29 @@
             "example": true,
             "description": "Indicates if the order will allow payments from the customer before the order is marked as fulfilled.",
             "nullable": true
+          },
+          "product_items": {
+            "type": "array",
+            "description": "An array of product items.",
+            "items": {
+              "type": "object",
+              "description": "Variants of this products.",
+              "properties": {
+                "variant_id": {
+                  "type": "string",
+                  "example": "00000000-0000-4000-8000-000000000000",
+                  "minLength": 36,
+                  "maxLength": 36,
+                  "format": "uuid",
+                  "description": "ID of the product variant to associate with the order item. UUID Version 4."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "example": 3,
+                  "description": "A positive integer representing the number of instances of this item that was or will be serviced."
+                }
+              }
+            }
           }
         }
       },
@@ -4416,12 +6611,33 @@
             "nullable": false
           },
           "data": {
-            "$ref": "#/components/schemas/Order",
-            "nullable": true
+            "$ref": "#/components/schemas/Order"
           }
         },
         "required": [
           "status"
+        ]
+      },
+      "OrderTagsPutPayload": {
+        "title": "OrderTagsPutPayload",
+        "type": "object",
+        "description": "A request to change the currently authenticated user's password.",
+        "properties": {
+          "tag_ids": {
+            "type": "array",
+            "description": "Array of tag IDs to attach to the order.",
+            "items": {
+              "description": "ID of a tag. UUID Version 4.",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "format": "uuid",
+              "example": "00000000-0000-4000-8000-000000000000"
+            }
+          }
+        },
+        "required": [
+          "tag_ids"
         ]
       },
       "PaginationLinks": {
@@ -4525,11 +6741,42 @@
           "path"
         ]
       },
+      "PolotnoJson": {
+        "title": "PolotnoJson",
+        "type": "object",
+        "description": "The JSON representation of a Polotno canvas.",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "example": 500,
+            "description": "The width of the canvas.",
+            "nullable": false
+          },
+          "height": {
+            "type": "integer",
+            "example": 500,
+            "description": "The height of the canvas.",
+            "nullable": false
+          }
+        },
+        "required": [
+          "width",
+          "height"
+        ]
+      },
       "Product": {
         "title": "Product",
         "type": "object",
         "description": "A product available for purchase via an order.",
         "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object's type. Objects of the same type share the same schema.",
+            "example": "PRODUCT",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 100
+          },
           "id": {
             "type": "string",
             "example": "00000000-0000-4000-8000-000000000000",
@@ -4620,6 +6867,37 @@
           "title"
         ]
       },
+      "ProductCategoryCollection": {
+        "title": "ProductCatgoryCollection",
+        "type": "object",
+        "description": "A collection of product categories.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ProductCategory"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
       "ProductCollection": {
         "title": "ProductCollection",
         "type": "object",
@@ -4635,19 +6913,17 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "items": {
               "$ref": "#/components/schemas/Product"
             },
             "nullable": true
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -4676,12 +6952,12 @@
             "minLength": 0,
             "maxLength": 255
           },
-          "price": {
+          "price_amount": {
             "type": "integer",
             "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the price of the product variant.",
             "example": 10000,
             "nullable": false,
-            "min": 0
+            "minimum": 0
           },
           "duration": {
             "type": "integer",
@@ -4693,8 +6969,35 @@
         },
         "required": [
           "id",
-          "title",
-          "price"
+          "title"
+        ]
+      },
+      "PromotionCode": {
+        "title": "PromotionCode",
+        "type": "object",
+        "description": "A Promotion Code represents a customer-redeemable code for a coupon.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the coupon. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "code": {
+            "type": "string",
+            "description": "The customer-facing code. This code must be unique across all active promotion codes.",
+            "example": "SPRING_SALE",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "id",
+          "code"
         ]
       },
       "PropertyWebsite": {
@@ -4737,7 +7040,6 @@
         ]
       },
       "SocialProfiles": {
-        "nullable": true,
         "title": "SocialProfiles",
         "type": "object",
         "description": "External profile URLs for an agent or brokerage group.",
@@ -4789,14 +7091,62 @@
           }
         }
       },
-      "Task": {
-        "title": "Task",
+      "SsoProvider": {
         "type": "object",
-        "description": "A task to be done.",
+        "title": "SsoProvider",
+        "description": "A SSO Provider contains the information pertaining to the SSO connection.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "Name of the provider",
+            "example": "Some Company",
+            "nullable": false
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "Technology of the provider",
+            "example": "Auth0",
+            "nullable": false
+          }
+        },
+        "required": [
+          "name",
+          "provider"
+        ]
+      },
+      "SsoUser": {
+        "type": "object",
+        "title": "SsoUser",
+        "description": "A SSO User contains the information pertaining to a users SSO account.",
+        "properties": {
+          "sso_id": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "SSO ID of the user",
+            "example": "1234",
+            "nullable": false
+          },
+          "sso_provider": {
+            "$ref": "#/components/schemas/SsoProvider"
+          }
+        },
+        "required": [
+          "sso_id"
+        ]
+      },
+      "Tag": {
+        "title": "Tag",
+        "type": "object",
+        "description": "A label attached to something for the purpose of identification or categorization.",
         "properties": {
           "id": {
             "type": "string",
-            "description": "ID of the task. UUID Version 4.",
+            "description": "ID of the tag. UUID Version 4.",
             "minLength": 36,
             "maxLength": 36,
             "format": "uuid",
@@ -4805,48 +7155,231 @@
           },
           "name": {
             "type": "string",
-            "description": "The name of the task.",
-            "example": "Create listing flyer",
+            "description": "The name of the tag.",
+            "example": "Photography",
             "minLength": 1,
             "maxLength": 255,
             "nullable": false
           },
-          "description": {
+          "slug": {
             "type": "string",
-            "description": "The description of the task.",
-            "example": "Go into marketing materials and create a flyer for this listing",
+            "description": "The slug of the tag.",
+            "example": "photography",
             "minLength": 1,
             "maxLength": 255,
-            "nullable": true
+            "nullable": false
           },
-          "assignee": {
-            "$ref": "#/components/schemas/User"
-          },
-          "due_at": {
+          "color": {
             "type": "string",
-            "description": "The date and time (ISO 8601 format) when the task is due.",
-            "example": "2021-06-30T21:30:00Z",
+            "description": "The background color of the tag.",
+            "example": "#8BC34A",
+            "minLength": 7,
+            "maxLength": 7,
+            "nullable": false
+          },
+          "font_color": {
+            "type": "string",
+            "description": "The font color of the tag.",
+            "example": "#FFFFFF",
+            "minLength": 7,
+            "maxLength": 7,
+            "nullable": false
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "color",
+          "font_color"
+        ]
+      },
+      "Tax": {
+        "title": "Tax",
+        "type": "object",
+        "description": "A tax represents the application of a tax rate to a taxed entity, such as an order or order item. ",
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object's type.",
             "minLength": 0,
             "maxLength": 255,
-            "nullable": true,
-            "format": "date-time"
+            "example": "TAX"
           },
-          "completed_at": {
+          "id": {
             "type": "string",
-            "description": "The date and time (ISO 8601 format) when the task is completed.",
-            "example": "2021-06-30T21:30:00Z",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the tax. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
+          },
+          "total_tax_amount": {
+            "type": "integer",
+            "example": 2099,
+            "description": "A positive integer in the smallest currency unit (that is, 100 cents for $1.00) representing the total calculated tax for this tax rate for all applicable order items.",
+            "nullable": false,
+            "minimum": 0
+          },
+          "applied_rate": {
+            "type": "number",
+            "format": "float",
+            "example": 0.075,
+            "minimum": 0,
+            "maximum": 1,
+            "description": "A decimal value representing the rate of the parent tax rate at the time of this tax application. For example, 0.075 would represent an applied tax percentage of 7.5%."
+          },
+          "tax_rate": {
+            "$ref": "#/components/schemas/TaxRate"
+          }
+        },
+        "required": [
+          "object",
+          "id"
+        ]
+      },
+      "TaxPostPayload": {
+        "title": "TaxPostPayload",
+        "type": "object",
+        "description": "Payload for creating a tax.",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the order apply this tax to. UUID Version 4.",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "tax_rate_data": {
+            "type": "object",
+            "description": "Data to construct an ad hoc tax rate inline to apply to this order.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the tax.",
+                "example": "New York State Tax",
+                "nullable": false,
+                "minLength": 0,
+                "maxLength": 255
+              },
+              "description": {
+                "type": "string",
+                "description": "The description of the tax rate.",
+                "example": "Tax rate applied for any property that falls within the bounds New York State.",
+                "nullable": false,
+                "minLength": 0,
+                "maxLength": 65536
+              },
+              "applied_rate": {
+                "type": "number",
+                "format": "float",
+                "example": 0.075,
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A decimal value representing the rate that should be applied to a taxed entity. For example, 0.075 would represent an applied tax percentage of 7.5%."
+              }
+            }
+          }
+        },
+        "required": [
+          "order_id"
+        ]
+      },
+      "TaxRate": {
+        "title": "TaxRate",
+        "type": "object",
+        "description": "A tax rate represents the percentage of tax that should be applied to a taxed entity.",
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "String representing the object's type.",
             "minLength": 0,
             "maxLength": 255,
-            "nullable": true,
-            "format": "date-time"
+            "example": "TAX_RATE"
           },
-          "completed_by": {
-            "$ref": "#/components/schemas/User"
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "description": "ID of the tax rate. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "nullable": false
           },
-          "is_completed": {
-            "type": "boolean",
-            "description": "Whether or not the task is completed.",
-            "example": true
+          "name": {
+            "type": "string",
+            "description": "The name of the tax.",
+            "example": "New York State Tax",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the tax rate.",
+            "example": "Tax rate applied for any property that falls within the bounds New York State.",
+            "nullable": false,
+            "minLength": 0,
+            "maxLength": 65536
+          },
+          "applied_rate": {
+            "type": "number",
+            "format": "float",
+            "example": 0.075,
+            "minimum": 0,
+            "maximum": 1,
+            "description": "A decimal value representing the rate that should be applied to a taxed entity. For example, 0.075 would represent an applied tax percentage of 7.5%."
+          }
+        },
+        "required": [
+          "object",
+          "id"
+        ]
+      },
+      "TaxResource": {
+        "title": "TaxResouce",
+        "type": "object",
+        "description": "A tax response resource.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/Tax"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "Territory": {
+        "title": "Territory",
+        "type": "object",
+        "description": "A region where a company offers services. ",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of the territory. UUID Version 4.",
+            "minLength": 36,
+            "maxLength": 36,
+            "format": "uuid",
+            "example": "00000000-0000-4000-8000-000000000000",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the territory.",
+            "example": "New York City",
+            "minLength": 1,
+            "maxLength": 255,
+            "nullable": false
           }
         },
         "required": [
@@ -4854,10 +7387,10 @@
           "name"
         ]
       },
-      "TaskCollection": {
-        "title": "TaskCollection",
+      "TerritoryCollection": {
+        "title": "TerritoryCollection",
         "type": "object",
-        "description": "A collection of tasks.",
+        "description": "A collection of territories.",
         "properties": {
           "status": {
             "type": "string",
@@ -4868,42 +7401,17 @@
             "nullable": false
           },
           "data": {
+            "nullable": true,
             "type": "array",
-            "description": "",
             "items": {
-              "$ref": "#/components/schemas/Task"
-            },
-            "nullable": true
+              "$ref": "#/components/schemas/Territory"
+            }
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationMeta"
           },
           "links": {
-            "$ref": "#/components/schemas/PaginationLinks",
-            "nullable": true
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "TaskResource": {
-        "title": "TaskResource",
-        "type": "object",
-        "description": "A task response resource.",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "minLength": 0,
-            "maxLength": 255,
-            "description": "What was the state of the request?",
-            "nullable": false
-          },
-          "data": {
-            "$ref": "#/components/schemas/Task",
-            "nullable": true
+            "$ref": "#/components/schemas/PaginationLinks"
           }
         },
         "required": [
@@ -4957,14 +7465,14 @@
           },
           "data": {
             "type": "array",
-            "description": "",
+            "description": "A collection of objects.",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/Timeslot"
             }
           },
           "meta": {
-            "$ref": "#/components/schemas/PaginationMeta"
+            "$ref": "#/components/schemas/CalendarDayCollectionMeta"
           },
           "links": {
             "$ref": "#/components/schemas/PaginationLinks"
@@ -5037,6 +7545,13 @@
             "example": "owner",
             "description": "Describes user's relationship (access level) to a specified group. Only returned if this resource is returned as a sub-resource of a group.",
             "nullable": true
+          },
+          "sso_users": {
+            "type": "array",
+            "description": "The list of SSO users associated with this user.",
+            "items": {
+              "$ref": "#/components/schemas/SsoUser"
+            }
           }
         },
         "required": [
@@ -5144,6 +7659,45 @@
           "source_type",
           "thumbnail_url",
           "playback_url"
+        ]
+      },
+      "VideoPutPayload": {
+        "title": "VideoPutPayload",
+        "type": "object",
+        "description": "Payload to update a video.",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The name of the video.",
+            "example": "Home Walkthrough Video",
+            "minLength": 1,
+            "maxLength": 100,
+            "nullable": false
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "VideoResource": {
+        "title": "VideoResource",
+        "type": "object",
+        "description": "A video.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What was the state of the request?",
+            "nullable": false
+          },
+          "data": {
+            "$ref": "#/components/schemas/Video"
+          }
+        },
+        "required": [
+          "status"
         ]
       }
     }
